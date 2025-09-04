@@ -1,0 +1,112 @@
+\section{Proposed MIRAGE Benchmark}
+% Despite significant advancement in MGTD research in recent years, existing benchmarks still exhibit notable limitations in terms of Domain-Diversity and Source-LLMs Coverage.
+% %
+% The narrow range of text domains fails to reflect the diverse contexts in which LLMs are applied~\cite{turingbench, detectrl}, while the heavy reliance on small-scale, open-source models~\cite{m4bench, raid} neglects the widespread adoption of commercial, closed-source LLMs in practical applications.
+% %
+% Moreover, most existing benchmark datasets focus primarily on sampling for MGT while lacking consideration for MRT~\cite{mage, hc3}, which diverges from real-world scenarios.
+% %
+% These limitations hinder a thorough evaluation of current detection methods, resulting in models that perform well on specific datasets but struggle in broader, real-world applications.
+
+% Current benchmarks often focus on narrow text domains~\cite{turingbench, detectrl} and primarily rely on small-scale, open-source models~\cite{m4bench, raid}, overlooking the prevalent use of commercial, closed-source LLMs in real-world applications. Furthermore, existing datasets predominantly emphasize MGT sampling while neglecting MRT~\cite{mage, hc3}, which misaligns with practical scenarios. 
+
+Current benchmarks exhibit notable limitations in diversity of text domains~\cite{turingbench, detectrl}, coverage of source LLMs~\cite{m4bench, raid} and evaluation tasks~\cite{mage, hc3}.
+%
+These constraints hinder comprehensive assessment and lead to detection models with poor generalizability beyond narrowly defined benchmark scenarios.
+
+In order to facilitate a robust evaluation that better reflect real-world application, we present the \textit{\textbf{M}ulti-domain \textbf{I}nclusive \textbf{R}ealistic \textbf{A}ssessment for machine \textbf{G}enerated text d\textbf{E}tection (\textbf{MIRAGE})} benchmark.
+%
+MIRAGE constitutes the most comprehensive multi-task MGTD evaluation framework to date, incorporating both generative and revisionary text across diverse domains, employing most advanced LLMs, including 13 proprietary and 4 open-source LLMs.
+
+
+\subsection{Benchmark Construction}
+ 
+\noindent \textbf{Multi-domain Sampling. }
+Considering that LLMs exhibit varying performance across different text domains, MIRAGE sample HWT of 5 domains from 10 corpora, detail information are presented in Supplementary Material.
+
+\noindent \textbf{Inclusive MGT Tasks. }
+Following established methodologies in the ~\cite{fastdetectgpt} and ~\cite{imbd}, we designed three distinct MGT tasks: \textit{Generate}, \textit{Polish}, and \textit{Rewrite}.
+%
+The \textit{Generate} task involves creating new text based on the first 30 tokens of an HWT.
+%
+The \textit{Polish} task refines an existing HWT while preserving its original details and meaning.
+%
+The \textit{Rewrite} task paraphrases a given HWT without altering its meaning or essential details.
+%
+The detailed prompt of each task will be present in Supplementary Material.
+
+\noindent \textbf{Realistic LLM Usage. }
+In real-world scenarios, people typically rely on powerful commercial closed-source LLMs to generate or revise text.
+%
+However, most of existing benchmarks~\cite{turingbench, hc3, m4bench, mage, raid, detectrl} rely on open-source LLMs to create data, resulting in a gap between current benchmarks and real-world evaluations.
+%
+To address this, MIRAGE incorporates 13 mainstream commercial LLMs, as detailed in Supplementary Material.
+
+Concurrently, recognizing the increasing deployment of high-performance open-source models in localized applications, we incorporated four advanced open-source LLMs~\cite{qwen2.5, llama3}, ensuring comprehensive coverage of the contemporary LLM ecosystem.
+
+\noindent \textbf{Data Cleaning. }
+We remove the `\textbackslash n' character from each data entry to prevent the detector from identifying MGT based on the presence of the `\textbackslash n' symbol. 
+%
+Subsequently, we segment the text into words using spaces and filter out texts containing 100-200 words from these datasets to control for length-based detection biases.
+
+\noindent \textbf{Composition. }
+We consider two distinct evaluation scenarios to reflect real-world applications:
+
+\textit{\textbf{Disjoint-Input Generation(DIG):}} This assesses a detector's ability to distinguish between an original HWT and a corresponding MGT or MRT produced by a single LLM.
+
+\textit{\textbf{Shared-Input Generation (SIG):}} This assesses a detector's capacity to simultaneously differentiate multiple MGTs or MRTs (produced by different LLMs) from the same original HWT.
+
+%
+We design each LLM to generate 2,000 samples for each MGT task, equally distributed between DIG and SIG scenarios (1,000 samples each).
+%
+To ensure the balance of text fields, both DIG and SIG maintained identical domain distribution ratios, as detailed in Supplementary Material.
+
+Sampling begins with constructing domain level HWT datasets by proportionally merging source datasets within each domain.
+%
+Such dataset-mixing strategy ease dataset-bias by preventing oversampling from single dataset.
+
+During implementation, SIG is treated as an independent ``model'' and incorporates alongside the 17 individual LLMs in the sampling process.
+%
+For each model (including SIG), we sequentially sample data from each domain dataset.
+%
+Once sampled, items are removed from corresponding domain datasets to maintain the distinction between DIG and SIG data.
+%
+Within each text domain, data is sampled continuously until the number of samples for that domain meets the requirements specified in Supplementary Material.
+%
+Once the data sampling for one text domain is complete, the process moves to the next, repeating until all text domains have been sampled.
+
+This methodology produces the DIG dataset for each LLM and a comprehensive SIG dataset, which are subsequently combined to form the complete sample set for each LLM across all tasks.
+
+\noindent \textbf{Data Augmentation. }
+The language style is a key distinguishing feature between HWT and MGT, with a closer alignment to human language style posing a more challenging task for MGT detectors.
+%
+With this consideration, we introduce data augmentation in terms of LLM's language styles. 
+%
+Specifically, we incorporated the phrase ``in a <style> style" into the input prompt.
+%
+We manually select 16 different language styles, randomly choosing one during each LLM inference to achieve style-diversity.
+
+This approach helps assess the robustness of detectors against content with varying language styles.
+%
+Moreover, in practice, one often adds language style constraints to prompts when using LLMs to assist with writing.
+%
+Thus, It further enhances the benchmark’s ability to simulate real-world scenarios.
+
+\noindent \textbf{Post Cleaning. }
+After generating MGT or MRT from the above HWT data, we perform data cleaning on the generated data.
+%
+First, all instances of the `\textbackslash n' and `\textbackslash r' are removed, to prevent detection from symbol's feature.
+%
+Next, we remove texts with fewer than 90 words or more than 220 words, to prevent the impact of text length variations on detection, and finally obtain the MIRAGE benchmark dataset.
+%
+The statistical results are presented in Supplementary Material.
+
+\subsection{Evaluate Metrics}
+Consistent with prior works~\cite{detectgpt, fastdetectgpt, imbd}, we adopt the \textit{Area Under the Receiver Operating Characteristic Curve (AUROC)} as the primary evaluation metric.
+%
+To assess the performance on specific threshold, we incorporate \textit{TPR at a 5\% false positive rate (TPR@5\%)} as a supplementary metric.
+%
+Furthermore, considering the MIRAGE-SIG is a class-imbalanced dataset, we additionally report the \textit{Matthews Correlation Coefficient (MCC)} and \textit{Balanced Accuracy} to provide a more comprehensive evaluation.
+%
+Together, this diverse set of metrics provides a comprehensive assessment of detector's performance, ensuring that the evaluation reflects both theoretical completeness and real-world applicability.
+%
+For more information on metrics, please see Supplementary Material.

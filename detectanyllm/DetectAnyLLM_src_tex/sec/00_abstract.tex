@@ -1,0 +1,23 @@
+\begin{abstract}
+The rapid advancement of large language models (LLMs) has blurred the boundary between human-written and machine-generated text, drawing urgent attention to the task of machine-generated text detection (MGTD).
+%
+However, existing approaches struggle in complex real-world scenarios: zero-shot detectors rely heavily on scoring model's output distribution while training-based detectors are often constrained by overfitting to the training data, limiting generalization.
+%
+We found that the performance bottleneck of training-based detectors stems from the misalignment between training objective and task needs, i.e., optimizing for token distribution rather than the MGTD task itself.
+%
+To address this issue, we propose \textbf{Direct Discrepancy Learning (DDL)}, a novel optimization strategy that directly optimize the scoring model with task-oriented knowledge.
+%
+DDL enables the scoring model to better capture the core semantics of the detection task, thereby enhancing both robustness and generalization.
+%
+Built upon this approach, we introduce \textbf{DetectAnyLLM}, a unified detection framework that achieves state-of-the-art MGTD performance across diverse LLMs.
+%
+To ensure a robust and reliable evaluation, we construct \textbf{MIRAGE}, the most diverse multi-task MGTD benchmark.
+%
+MIRAGE samples human-written texts from 10 corpora across 5 domains, which are then regenerated or revised using 17 cutting-edge LLMs, covering a wide spectrum of commercial models and textual styles.
+%
+Extensive experiments on MIRAGE reveal the limitations of existing methods in complex environment.
+%
+In contrast, DetectAnyLLM consistently outperforms them, achieving over a 70\% performance improvement under the same training data and base scoring model, and thus underscores the effectiveness of our DDL.
+%
+The code and benchmark will be make publicly available.
+\end{abstract}

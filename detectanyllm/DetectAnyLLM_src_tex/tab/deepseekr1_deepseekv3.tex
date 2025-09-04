@@ -1,0 +1,154 @@
+\begin{table*}[h]
+    \centering
+    \caption{Generator: DeepSeek-R1, DeepSeek-V3. "Imp.": Improvement over previous SOTA, computed as $(new - old) / (1.0 - old)$.}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{l|cccc|cccc|cccc}
+    \hline
+
+    \hline
+
+    \hline
+    \multicolumn{13}{c}{\textbf{MIRAGE-DIG, DeepSeek-R1}}\\
+    \hline
+
+    \hline
+
+    \hline
+    \multirow{2}{*}{Methods}&\multicolumn{4}{c|}{Generate}&\multicolumn{4}{c|}{Polish}&\multicolumn{4}{c}{Rewrite} \\
+    &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  \\
+    \hline
+
+    \hline
+    Likelihood~\cite{likelihood} & 0.3248 & 0.5005 & 0.0224 & 0.0010 & 0.3533 & 0.5000 & 0.0000 & 0.0100 & 0.3285 & 0.5000 & 0.0000 & 0.0093 \\
+    LogRank~\cite{logrank} & 0.2896 & 0.5005 & 0.0224 & 0.0010 & 0.3235 & 0.5000 & 0.0000 & 0.0089 & 0.3037 & 0.5000 & 0.0000 & 0.0062 \\
+    Entropy~\cite{entropy} & 0.6454 & 0.6242 & 0.2939 & 0.0902 & 0.5593 & 0.5456 & 0.1194 & 0.1000 & 0.5772 & 0.5542 & 0.1638 & 0.1373 \\
+    RoBERTa-Base~\cite{roberta} $\spadesuit$ & 0.5335 & 0.5000 & 0.0000 & 0.0000 & 0.4483 & 0.5000 & 0.0000 & 0.0000 & 0.4207 & 0.5000 & 0.0000 & 0.0021 \\
+    RoBERTa-Large~\cite{roberta} $\spadesuit$ & 0.2018 & 0.5000 & 0.0000 & 0.0000 & 0.2631 & 0.5000 & 0.0000 & 0.0056 & 0.3501 & 0.5000 & 0.0000 & 0.0196 \\
+    LRR~\cite{lrrandnpr} & 0.2159 & 0.5005 & 0.0224 & 0.0000 & 0.2493 & 0.5000 & 0.0000 & 0.0089 & 0.2508 & 0.5000 & 0.0000 & 0.0072 \\
+    DNA-GPT~\cite{dna-gpt} $\diamondsuit$ & 0.2842 & 0.5025 & 0.0448 & 0.0000 & 0.3112 & 0.5000 & 0.0000 & 0.0100 & 0.2962 & 0.5005 & 0.0227 & 0.0114 \\
+    NPR~\cite{lrrandnpr} $\diamondsuit$ & 0.5706 & 0.6172 & 0.2931 & 0.0130 & 0.5089 & 0.5556 & 0.1648 & 0.0267 & 0.4591 & 0.5253 & 0.0775 & 0.0175 \\
+    DetectGPT~\cite{detectgpt} $\diamondsuit$ & 0.6776 & 0.6623 & 0.3693 & 0.0451 & 0.5792 & 0.5811 & 0.2026 & 0.0400 & 0.5111 & 0.5320 & 0.0912 & 0.0248 \\
+    Fast-DetectGPT~\cite{fastdetectgpt} & 0.3838 & 0.5000 & 0.0000 & 0.0230 & 0.2661 & 0.5000 & 0.0000 & 0.0111 & 0.2360 & 0.5000 & 0.0000 & 0.0041 \\
+    ImBD~\cite{imbd} $\spadesuit$ & 0.8972 & 0.8181 & 0.6363 & 0.5020 & 0.7989 & 0.7333 & 0.4855 & 0.4044 & 0.7307 & 0.6847 & 0.3779 & 0.3189 \\
+    \hline
+    
+    \hline
+    \rowcolor[HTML]{fff5f4}
+    \textbf{DetectAnyLLM(ours) $\spadesuit$} & \textbf{0.9566} & \textbf{0.9088} & \textbf{0.8194} & \textbf{0.7505} & \textbf{0.9720} & \textbf{0.9278} & \textbf{0.8556} & \textbf{0.8978} & \textbf{0.9612} & \textbf{0.9262} & \textbf{0.8532} & \textbf{0.8958} \\
+    
+    \rowcolor[HTML]{fff5f4}
+    \textbf{Imp.} & \red{+57.78\%} & \red{+49.86\%} & \red{+50.36\%} & \red{+49.90\%} & \red{+86.09\%} & \red{+72.92\%} & \red{+71.93\%} & \red{+82.84\%} & \red{+85.58\%} & \red{+76.60\%} & \red{+76.40\%} & \red{+84.70\%} \\
+    \hline
+
+    \hline
+
+    \hline
+    \multicolumn{13}{c}{\textbf{MIRAGE-SIG, DeepSeek-R1}}\\
+    \hline
+
+    \hline
+
+    \hline
+    \multirow{2}{*}{Methods}&\multicolumn{4}{c|}{Generate}&\multicolumn{4}{c|}{Polish}&\multicolumn{4}{c}{Rewrite} \\
+    &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  \\
+    \hline
+
+    \hline
+    Likelihood~\cite{likelihood} & 0.3301 & 0.5015 & 0.0224 & 0.0040 & 0.3358 & 0.5006 & 0.0235 & 0.0122 & 0.3347 & 0.5000 & 0.0000 & 0.0083 \\
+    LogRank~\cite{logrank} & 0.2983 & 0.5000 & 0.0000 & 0.0040 & 0.3063 & 0.5000 & 0.0000 & 0.0110 & 0.3098 & 0.5000 & 0.0000 & 0.0072 \\
+    Entropy~\cite{entropy} & 0.6389 & 0.6048 & 0.2534 & 0.1284 & 0.5739 & 0.5475 & 0.1313 & 0.1094 & 0.5759 & 0.5537 & 0.1895 & 0.1259 \\
+    RoBERTa-Base~\cite{roberta} $\spadesuit$ & 0.5245 & 0.5000 & 0.0000 & 0.0000 & 0.4373 & 0.5000 & 0.0000 & 0.0000 & 0.4201 & 0.5000 & 0.0000 & 0.0010 \\
+    RoBERTa-Large~\cite{roberta} $\spadesuit$ & 0.2007 & 0.5000 & 0.0000 & 0.0000 & 0.2768 & 0.5000 & 0.0000 & 0.0066 & 0.3504 & 0.5005 & 0.0227 & 0.0124 \\
+    LRR~\cite{lrrandnpr} & 0.2322 & 0.5000 & 0.0000 & 0.0020 & 0.2396 & 0.5000 & 0.0000 & 0.0055 & 0.2483 & 0.5000 & 0.0000 & 0.0052 \\
+    DNA-GPT~\cite{dna-gpt} $\diamondsuit$ & 0.2830 & 0.5010 & 0.0100 & 0.0000 & 0.2896 & 0.5000 & 0.0000 & 0.0033 & 0.2982 & 0.5000 & 0.0000 & 0.0062 \\
+    NPR~\cite{lrrandnpr} $\diamondsuit$ & 0.5762 & 0.6138 & 0.2804 & 0.0181 & 0.5115 & 0.5403 & 0.1516 & 0.0221 & 0.4631 & 0.5263 & 0.0867 & 0.0175 \\
+    DetectGPT~\cite{detectgpt} $\diamondsuit$ & 0.6823 & 0.6605 & 0.3485 & 0.0451 & 0.5821 & 0.5751 & 0.1658 & 0.0309 & 0.5135 & 0.5335 & 0.1215 & 0.0351 \\
+    Fast-DetectGPT~\cite{fastdetectgpt} & 0.3874 & 0.5000 & 0.0000 & 0.0261 & 0.2580 & 0.5000 & 0.0000 & 0.0088 & 0.2437 & 0.5000 & 0.0000 & 0.0031 \\
+    ImBD~\cite{imbd} $\spadesuit$ & 0.9087 & 0.8400 & 0.6803 & 0.4835 & 0.7885 & 0.7249 & 0.4693 & 0.4320 & 0.7383 & 0.6827 & 0.3754 & 0.3148 \\
+    \hline
+    
+    \hline
+    \rowcolor[HTML]{fff5f4}
+    \textbf{DetectAnyLLM(ours) $\spadesuit$} & \textbf{0.9617} & \textbf{0.9303} & \textbf{0.8617} & \textbf{0.8646} & \textbf{0.9696} & \textbf{0.9215} & \textbf{0.8437} & \textbf{0.8796} & \textbf{0.9534} & \textbf{0.9174} & \textbf{0.8352} & \textbf{0.8772} \\
+    
+    \rowcolor[HTML]{fff5f4}
+    \textbf{Imp.} & \red{+58.04\%} & \red{+56.43\%} & \red{+56.74\%} & \red{+73.79\%} & \red{+85.63\%} & \red{+71.49\%} & \red{+70.55\%} & \red{+78.79\%} & \red{+82.19\%} & \red{+73.98\%} & \red{+73.61\%} & \red{+82.08\%} \\
+    \hline
+
+    \hline
+
+    \hline
+    \multicolumn{13}{c}{\textbf{MIRAGE-DIG, DeepSeek-V3}}\\
+    \hline
+
+    \hline
+
+    \hline
+    \multirow{2}{*}{Methods}&\multicolumn{4}{c|}{Generate}&\multicolumn{4}{c|}{Polish}&\multicolumn{4}{c}{Rewrite} \\
+    &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  \\
+    \hline
+
+    \hline
+    Likelihood~\cite{likelihood} & 0.6430 & 0.6484 & 0.3038 & 0.0201 & 0.6044 & 0.5885 & 0.1849 & 0.0421 & 0.5370 & 0.5610 & 0.1292 & 0.0242 \\
+    LogRank~\cite{logrank} & 0.6495 & 0.6439 & 0.2991 & 0.0272 & 0.5893 & 0.5785 & 0.1683 & 0.0432 & 0.5242 & 0.5547 & 0.1136 & 0.0231 \\
+    Entropy~\cite{entropy} & 0.5548 & 0.5805 & 0.2026 & 0.0523 & 0.4305 & 0.5079 & 0.0401 & 0.0285 & 0.4848 & 0.5258 & 0.1164 & 0.0852 \\
+    RoBERTa-Base~\cite{roberta} $\spadesuit$ & 0.5416 & 0.5302 & 0.1092 & 0.1026 & 0.4806 & 0.5000 & 0.0000 & 0.0316 & 0.4764 & 0.5005 & 0.0050 & 0.0410 \\
+    RoBERTa-Large~\cite{roberta} $\spadesuit$ & 0.4194 & 0.5015 & 0.0389 & 0.0322 & 0.5217 & 0.5216 & 0.0439 & 0.0421 & 0.5530 & 0.5373 & 0.0769 & 0.0641 \\
+    LRR~\cite{lrrandnpr} & 0.6567 & 0.6363 & 0.2800 & 0.0744 & 0.5189 & 0.5269 & 0.0545 & 0.0443 & 0.4758 & 0.5095 & 0.0206 & 0.0263 \\
+    DNA-GPT~\cite{dna-gpt} $\diamondsuit$ & 0.6980 & 0.6635 & 0.3314 & 0.0885 & 0.5620 & 0.5558 & 0.1308 & 0.0527 & 0.5146 & 0.5310 & 0.0667 & 0.0347 \\
+    NPR~\cite{lrrandnpr} $\diamondsuit$ & 0.7026 & 0.6977 & 0.4364 & 0.0292 & 0.5712 & 0.5732 & 0.1820 & 0.0558 & 0.5230 & 0.5568 & 0.1394 & 0.0358 \\
+    DetectGPT~\cite{detectgpt} $\diamondsuit$ & 0.7581 & 0.7294 & 0.4737 & 0.0412 & 0.6084 & 0.5959 & 0.2169 & 0.0601 & 0.5656 & 0.5773 & 0.1914 & 0.0379 \\
+    Fast-DetectGPT~\cite{fastdetectgpt} & 0.9415 & 0.8732 & 0.7481 & \textbf{0.7435} & 0.6353 & 0.6064 & 0.2148 & 0.1191 & 0.6088 & 0.5910 & 0.1871 & 0.0715 \\
+    ImBD~\cite{imbd} $\spadesuit$ & 0.9119 & 0.8270 & 0.6550 & 0.5765 & 0.6800 & 0.6444 & 0.3130 & 0.2561 & 0.6930 & 0.6598 & 0.3373 & 0.3028 \\
+    \hline
+    
+    \hline
+    \rowcolor[HTML]{fff5f4}
+    \textbf{DetectAnyLLM(ours) $\spadesuit$} & \textbf{0.9473} & \textbf{0.8999} & \textbf{0.8016} & 0.7404 & \textbf{0.9152} & \textbf{0.8541} & \textbf{0.7122} & \textbf{0.7208} & \textbf{0.9125} & \textbf{0.8649} & \textbf{0.7353} & \textbf{0.7497} \\
+    
+    \rowcolor[HTML]{fff5f4}
+    \textbf{Imp.} & \red{+9.97\%} & \red{+21.03\%} & \red{+21.24\%} & -- & \red{+73.49\%} & \red{+58.96\%} & \red{+58.10\%} & \red{+62.46\%} & \red{+71.51\%} & \red{+60.28\%} & \red{+60.06\%} & \red{+64.10\%} \\
+    \hline
+
+    \hline
+
+    \hline
+        \multicolumn{13}{c}{\textbf{MIRAGE-SIG, DeepSeek-V3}}\\
+    \hline
+
+    \hline
+
+    \hline
+    \multirow{2}{*}{Methods}&\multicolumn{4}{c|}{Generate}&\multicolumn{4}{c|}{Polish}&\multicolumn{4}{c}{Rewrite} \\
+    &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  \\
+    \hline
+
+    \hline
+    Likelihood~\cite{likelihood} & 0.6522 & 0.6505 & 0.3055 & 0.0291 & 0.6144 & 0.6056 & 0.2211 & 0.0442 & 0.5545 & 0.5665 & 0.1371 & 0.0211 \\
+    LogRank~\cite{logrank} & 0.6556 & 0.6454 & 0.2944 & 0.0321 & 0.5980 & 0.5911 & 0.1826 & 0.0453 & 0.5407 & 0.5533 & 0.1066 & 0.0211 \\
+    Entropy~\cite{entropy} & 0.5455 & 0.5682 & 0.1772 & 0.0532 & 0.4244 & 0.5048 & 0.0388 & 0.0248 & 0.4753 & 0.5322 & 0.1078 & 0.0749 \\
+    RoBERTa-Base~\cite{roberta} $\spadesuit$ & 0.5305 & 0.5246 & 0.0891 & 0.0782 & 0.4630 & 0.5000 & 0.0000 & 0.0409 & 0.4912 & 0.5053 & 0.0386 & 0.0454 \\
+    RoBERTa-Large~\cite{roberta} $\spadesuit$ & 0.4179 & 0.5005 & 0.0224 & 0.0341 & 0.5121 & 0.5086 & 0.0430 & 0.0603 & 0.5509 & 0.5438 & 0.0882 & 0.0538 \\
+    LRR~\cite{lrrandnpr} & 0.6556 & 0.6249 & 0.2576 & 0.0612 & 0.5252 & 0.5318 & 0.0641 & 0.0442 & 0.4839 & 0.5084 & 0.0230 & 0.0232 \\
+    DNA-GPT~\cite{dna-gpt} $\diamondsuit$ & 0.7149 & 0.6760 & 0.3687 & 0.0802 & 0.5779 & 0.5722 & 0.1516 & 0.0420 & 0.5239 & 0.5311 & 0.0786 & 0.0359 \\
+    NPR~\cite{lrrandnpr} $\diamondsuit$ & 0.6938 & 0.6871 & 0.4142 & 0.0281 & 0.5728 & 0.5781 & 0.1673 & 0.0442 & 0.5397 & 0.5570 & 0.1385 & 0.0253 \\
+    DetectGPT~\cite{detectgpt} $\diamondsuit$ & 0.7579 & 0.7197 & 0.4701 & 0.0381 & 0.6136 & 0.6067 & 0.2236 & 0.0506 & 0.5783 & 0.5770 & 0.1724 & 0.0348 \\
+    Fast-DetectGPT~\cite{fastdetectgpt} & 0.9359 & 0.8666 & 0.7332 & 0.6971 & 0.6385 & 0.6110 & 0.2237 & 0.1196 & 0.6162 & 0.5833 & 0.1772 & 0.1086 \\
+    ImBD~\cite{imbd} $\spadesuit$ & 0.9177 & 0.8360 & 0.6728 & 0.6018 & 0.6868 & 0.6439 & 0.3127 & 0.2737 & 0.6880 & 0.6572 & 0.3267 & 0.2985 \\
+    \hline
+    
+    \hline
+    \rowcolor[HTML]{fff5f4}
+    \textbf{DetectAnyLLM(ours) $\spadesuit$} & \textbf{0.9656} & \textbf{0.9343} & \textbf{0.8687} & \textbf{0.8887} & \textbf{0.9286} & \textbf{0.8723} & \textbf{0.7448} & \textbf{0.7392} & \textbf{0.9112} & \textbf{0.8660} & \textbf{0.7329} & \textbf{0.7373} \\
+    
+    \rowcolor[HTML]{fff5f4}
+    \textbf{Imp.} & \red{+46.32\%} & \red{+50.75\%} & \red{+50.80\%} & \red{+63.25\%} & \red{+77.21\%} & \red{+64.15\%} & \red{+62.87\%} & \red{+64.09\%} & \red{+71.54\%} & \red{+60.92\%} & \red{+60.33\%} & \red{+62.56\%} \\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    }
+    \label{tab:deepseekr1_deepseekv3}
+\end{table*}

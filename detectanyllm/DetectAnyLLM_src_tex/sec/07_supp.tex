@@ -1,0 +1,549 @@
+\documentclass[sigconf, screen, review, anonymous]{acmart}
+\usepackage{xcolor,colortbl}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage{diagbox}
+\usepackage{array}
+\usepackage{enumerate}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{bookmark}
+\usepackage{enumitem}
+\usepackage{bbding}
+\usepackage{cleveref}
+\usepackage{arydshln}
+\newtheorem{definition}{Definition}
+% \renewcommand\footnotetextcopyrightpermission[1]{}
+\settopmatter{printacmref=false} %remove ACM reference format
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
+
+
+\newcommand{\lichongyi}[1]{\textbf{\color{cyan}(CL: {#1})}}
+\definecolor{new_olive}{HTML}{8b9656}
+\newcommand{\correct}[0]{\small\color{new_olive}\CheckmarkBold}
+\definecolor{new_pink}{HTML}{e096a7}
+\newcommand{\wrong}[0]{\small\color{new_pink}\XSolidBrush}
+\newcommand{\jiachen}[1]{{\color{blue}(JC: {#1})}}
+\newcommand{\toadd}[1]{{\color{green}{#1}}}
+\newcommand{\todel}[1]{{\color{red}{#1}}}
+\newcommand{\second}[1]{{\underline{#1}}}
+\definecolor{orangered}{HTML}{fa585b}
+\newcommand{\red}[1]{\textbf{\color{orangered}{#1}}}
+
+
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+\setcopyright{acmlicensed}
+\copyrightyear{2025}
+\acmYear{2025}
+\acmDOI{XXXXXXX.XXXXXXX}
+%% These commands are for a PROCEEDINGS abstract or paper.
+\acmConference[MM '25]{ACM Conference}{October 27--31,
+  2025}{Dublin, Ireland}
+%%
+%%  Uncomment \acmBooktitle if the title of the proceedings is different
+%%  from ``Proceedings of ...''!
+%%
+%%\acmBooktitle{Woodstock '18: ACM Symposium on Neural Gaze Detection,
+%%  June 03--05, 2018, Woodstock, NY}
+\acmISBN{978-1-4503-XXXX-X/2018/06}
+
+
+%%
+%% Submission ID.
+%% Use this when submitting an article to a sponsored event. You'll
+%% receive a unique submission ID from the organizers
+%% of the event, and this ID should be used as the parameter to this command.
+\acmSubmissionID{859}
+
+\begin{document}
+\title{DetectAnyLLM: Towards Generalizable and Robust Detection of Machine-Generated Text Across Domains and Models}
+\maketitle
+
+\appendix
+
+\section{More details on DDL}
+\subsection{Derivation of DPO}
+\textit{Direct Preference Learning (DPO)}~\cite{dpo} is derived from the optimization objective of \textit{Proximal Policy Optimization (PPO)}~\cite{ppo}, which is formulated as:
+\begin{equation}
+    \mathop{max}_\theta \mathbb{E}_{x\sim f_\theta(x)}[r(x)] - \beta\mathbb{D}_{KL}[(f_\theta(x) \mid \mid f_{ref}(x)],
+    \label{dpo_1}
+\end{equation}
+where $x$ is a text sampled from the scoring model $f_\theta$'s distribution, and $r$ is a reward function that can judge whether this sample is bad or good.
+%
+We can obtain DPO's optimization objective by analyzing and re-parameterizing this optimization objective.
+%
+The $f_{ref}$ stands for the reference model, usually the original $f_\theta$.
+%
+DPO~\cite{dpo} starts with explicit solution $f_\theta=p_r$ of Eq.~\eqref{dpo_1}:
+\begin{equation}
+    p_r(x) = \frac{1}{Z(x)}f_{ref}(x)\exp(\frac{1}{\beta}r(x)),
+    \label{dpo_2}
+\end{equation}
+where:
+\begin{equation}
+    Z(x) = \sum_{x}f_{ref}(x)\exp (\frac{1}{\beta}r(x)).
+    \label{dpo_3}
+\end{equation}
+Furthermore, we can reparameterize $r$ as:
+\begin{equation}
+    r(x) = \beta\log \frac{p_r(x)}{f_{ref}(x)} + \beta\log Z(x),
+    \label{dpo_4}
+\end{equation}
+where, $p_r$ is the best solution of Eq.~\eqref{dpo_1}, which we want $f_\theta$ to become.
+%
+Now, if we introduce the Bradley-Terry model to present the model's preference $L$ between HWT $x_h$ and MGT $x_m$, we can get:
+\begin{equation}
+\begin{aligned}
+    L(x_m \succ x_h) &= \sigma(r(x_m) - r(x_h))\\
+    &=\sigma(\beta\log\frac{p_r(x_m)}{f_{ref}(x_m)} - \beta\log\frac{p_r(x_h)}{f_{ref}(x_h)}),
+\end{aligned}
+\label{dpo_5}
+\end{equation}
+where we surprisingly reduced the partition function $Z(x)$.
+%
+By replacing $p_r$ with $f_\theta$ and utilizing Maximum-Likelihood Estimation to Eq.~\eqref{dpo_5}, we can finally present the DPO~\cite{dpo} optimize goal :
+\begin{equation}
+    \mathop{max}_\theta \mathbb{E}_{x_m, x_h \sim \mathop{D}}[\log \sigma(\beta\log\frac{f_\theta(x_m)}{f_{ref}(x_m)}-\beta\log\frac{f_\theta(x_h)}{f_{ref}(x_h)})],
+    \label{dpo_6}
+\end{equation}
+where $x_m$ denotes MGT and $x_h$ stands for HWT.
+%
+$f_{ref}$ is a reference model, usually the original $f_\theta$.
+
+\section{More details on MIRAGE}
+\subsection{More details on Data Source}
+\noindent \textbf{Time Bound. }
+To ensure that all sampled texts are human-written and free from contamination by LLM-generated content, most of the source datasets used were constructed prior to 2021.
+%
+For datasets containing data collected after 2021, we cleaned the data denoted collected after 2021 in these datasets to ensure the purity and authenticity of the human-written source material.
+
+\noindent \textbf{Source Domains and Datasets. }
+MIRAGE encompasses a diverse range of text domains, including \textit{Academic}, \textit{E-Mail}, \textit{Website}, \textit{News}, and \textit{Comment}.
+%
+The mapping between these domains and the corresponding source datasets is summarized in~\Cref{tab:source_datasets}.
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \caption{Source datasets for each domain. }
+    \resizebox{0.985\linewidth}{!}{
+    \begin{tabular}{l|c}
+    \hline
+    
+    \hline
+    
+    \hline
+    \textbf{Domains} &  \textbf{Datasets} \\
+    \hline
+    Academic  & BigPatent~\cite{bigpatent}, NeurIPS, ArXiv, PubMed-Abstracts~\cite{pubmedqa}\\
+    eMail & Enron-Emails\\
+    Website & OpenWebText\\
+    News & CNNDailyMails, XSum~\cite{xsum}, XLSum~\cite{xlsum}\\
+    Comment &  Amazon-Review\\
+    \hline
+
+    \hline
+    
+    \hline
+    \end{tabular}
+    }
+    \label{tab:source_datasets}
+\end{table}
+
+Additionally, we implement domain-specific pre-processing: extracting only abstracts from academic publications (NeurIPS and ArXiv) and isolating message content from email communications (Enron-Emails dataset).
+
+\noindent \textbf{Domain Composition. }
+As the amount of data varies across domains, the text domains are not treated equally in terms of quantity.
+%
+However, for both DIG and SIG, the proportion of texts from each domain that each LLM is required to generate or revise remains fixed.
+%
+The detailed domain distribution is shown in~\Cref{tab:domain_composition}.
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \caption{Text domain composition that each LLM is required to perform generation task in both DIG and SIG.}
+    \begin{tabular}{ccccc|c}
+    \hline
+
+    \hline
+
+    \hline
+    Academic& Mail & Website & News & Comment & \textbf{Total}  \\
+    \hline
+    300 & 100 & 200 & 200 & 200 & 1000 \\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    \label{tab:domain_composition}
+\end{table}
+
+\noindent \textbf{Statistic Result. }
+\Cref{tab:statistic} presents the overall statistics of the MIRAGE dataset across the two task settings: Disjoint-Input Generation and Shared-Input Generation.
+%
+For each setting, the dataset includes three task types—\textit{Generate} (Gen.), \textit{Polish} (Pol.), and \textit{Rewrite} (Rew.).
+%
+The number of instances is balanced across both settings, with each task type containing approximately 14,000 to 16,000 samples.
+%
+This balanced distribution ensures that the dataset supports a comprehensive evaluation of LLMs across different generation and revision scenarios.
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Statistic result of MIRAGE.}
+    \resizebox{0.985\linewidth}{!}{
+    \begin{tabular}{l|ccc|ccc}
+    \hline
+
+    \hline
+
+    \hline
+            & \multicolumn{3}{c|}{Disjoint-Input Generation} & \multicolumn{3}{c}{Shared-Input Generation} \\
+    Tasks& Gen. & Pol. & Rew. & Gen. & Pol. & Rew. \\
+    \hline
+    Count& 16412 & 14776 & 15735 & 16388 & 14776 & 15751 \\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    }
+    \label{tab:statistic}
+\end{table}
+
+
+\subsection{Source Generator LLMs}
+The source LLMs used for data generation in MIRAGE are listed in~\Cref{tab:src_models}.
+%
+In total, MIRAGE samples machine-generated texts (MGT) using 13 powerful commercial LLMs and 4 advanced open-source LLMs.
+%
+This selection reflects a strong emphasis on evaluating detection performance in real-world applicant scenarios, while still maintaining attention to the open-source LLM landscape.
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \caption{Commercial LLMs are highlighted in \textbf{bold}.}
+    \resizebox{0.985\linewidth}{!}{
+    \begin{tabular}{c|c}
+    \hline
+
+    \hline
+
+    \hline
+    Series & Models \\
+    \hline
+    GPT&  \textbf{GPT-4o}~\cite{gpt4o}, \textbf{GPT-o3-mini}~\cite{gpto1}, \textbf{GPT-4o-mini}~\cite{gpt4o}\\
+    Claude& \textbf{Claude-3.5-Haiku}, \textbf{Claude-3.7-sonnet}~\cite{claude} \\
+    DeepSeek& \textbf{DeepSeek-V3}~\cite{deepseekv3}, \textbf{DeepSeek-R1}~\cite{deepseekr1}\\
+    Gemini& \textbf{Gemini-2.0-Flash}, \textbf{Gemini-2.0-Flash-Lite}~\cite{gemini} \\
+    Qwen& Qwen-2.5-7B~\cite{qwen2.5}, Qwen-2.5-7B-R1-Distill~\cite{deepseekr1}, \textbf{QwQ-Plus}\\
+    LlaMa& LlaMA-3.1-8B~\cite{llama3}, LlaMa-3.1-8B-R1-Distill~\cite{deepseekr1}\\
+    Grok& \textbf{Grok2} \\
+    Moonshot & \textbf{Moonshot-v1} \\
+    Doubao& \textbf{Doubao-1.5-pro-32k} \\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    }
+    \label{tab:src_models}
+\end{table}
+
+
+\subsection{Prompts for Generation Tasks}
+The system prompts used for all three generation tasks are the same, specifically, ``You are a professional writing assistant who can write high-quality, coherent, and engaging articles. "
+%
+We add a style control signal to the user prompt, in order to perform data augmentation, thus promoting the robustness of our benchmark.
+
+\noindent \textbf{Style Control. }
+The style control signal is directly added to the user prompt, as ``in a $<$style$>$ style".
+%
+The $<$style$>$ is randomly chosen from a prepared style list, detail as shown in ~\Cref{tab:style_list}
+\begin{table}[htbp]
+    \centering
+    \caption{Detail style list.}
+    \begin{tabular}{c}
+    \hline
+
+    \hline
+
+    \hline
+    Style List \\
+    \hline
+    formal, oral, academic, literary, critical, narrative, \\
+    descriptive, lyric, objective, subjective, original,\\
+    casual, expository, argumentative, journalistic, poetic\\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    \label{tab:style_list}
+\end{table}
+
+\noindent \textbf{Prompt for Generate. }
+``Write an article about 150 words in a $<$style$>$ style starting exactly with: $<$original$>$".
+%
+The $<$original$>$ is the first 30 tokens of a HWT.
+
+\noindent \textbf{Prompt for Polish. }
+``Polish the following text in a {style} style without missing any original details. Ensure that the length of the polished text is similar to the original text. Directly output your polished text. Here is the original text: {original}"
+%
+The $<$original$>$ is a complete HWT.
+
+\noindent \textbf{Prompt for Rewrite. }
+``Paraphrase the following text in a {style} style without missing any original details. Ensure that the length of the paraphrased text is similar to the original text. Directly output your paraphrased text. Here is the original text: {original}"
+%
+The $<$original$>$ is a complete HWT.
+
+
+\begin{table*}[t]
+    \centering
+    \caption{Detail Results of different $\beta$ in SPO~\cite{imbd}. Metrics with subscript $_t$ correspond to the training set, and subscript $_v$ indicates evaluation on the polish task of MIRAGE-DIG. Avg.D(*) denotes the average discrepancy of *, where x$_h$ stands for human-written text and x$_m$ stands for machine-generated text. $\Delta$D denotes the distance between Avg.D(x$_h$) and Avg.D(x$_m$), a higher $\Delta$D is commonly better for discriminating between x$_h$ and x$_m$.}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{l|ccccccccccccccc}
+    \hline
+
+    \hline
+
+    \hline
+    $\beta$& $0.05$ & $0.10$ & $0.15$ & $0.20$ & $0.25$ & $0.30$ & $0.35$ & $0.40$ & $0.45$ & $0.50$ & $0.60$ & $0.70$ & $0.80$ & $0.90$ & $0.95$\\
+    \hline
+    AUROC$_t$        & \textbf{0.9490} & 0.9192 & 0.9088 & 0.9009 & 0.8945 & 0.8920 & 0.8888 & 0.8871 & 0.8821 & 0.8786 & 0.8742 & 0.8700 & 0.8622 & 0.8554 & 0.8542\\
+    AUPR$_t$         & \textbf{0.9566} & 0.9277 & 0.9155 & 0.9058 & 0.8982 & 0.8966 & 0.8935 & 0.8934 & 0.8897 & 0.8869 & 0.8846 & 0.8805 & 0.8741 & 0.8695 & 0.8689\\
+    Avg.D(x$_h$)$_t$ & -29.14 & -13.50 & -8.68  & -5.72  & -4.47  & -3.57  & -2.92  & -2.36  & -2.06  & -2.05  & -1.54  & -1.51  & -1.37  & -0.98  & -0.93 \\
+    Avg.D(x$_m$)$_t$ & -11.55 & -6.56  & -3.88  & -2.11  & -1.37  & -0.79  & -0.39  & -0.01  &  0.17  &  0.14  &  0.50  &  0.50  &  0.53  &  0.83  &  0.86 \\
+    $\Delta$D        &  17.59 &  6.94  &  4.8   &  3.61  &  3.10  &  2.78  &  2.53  &  2.35  &  2.23  &  2.19  &  2.04  &  2.01  &  1.90  &  1.81  &  1.79 \\
+    \hdashline
+    \rowcolor[HTML]{fff5f4}
+    AUROC$_v$        & \textbf{0.6907} & 0.6359 & 0.5972 & 0.5961 & 0.5851 & 0.5814 & 0.5802 & 0.5826 & 0.5788 & 0.5722 & 0.5649 & 0.5632 & 0.5536 & 0.5614 & 0.5632 \\
+    \rowcolor[HTML]{fff5f4}
+    AUPR$_v$         & \textbf{0.7075} & 0.5996 & 0.5614 & 0.5618 & 0.5490 & 0.5448 & 0.5437 & 0.5468 & 0.5445 & 0.5388 & 0.5334 & 0.5326 & 0.5256 & 0.5345 & 0.5362 \\
+    \rowcolor[HTML]{fff5f4}
+    Avg.D(x$_h$)$_v$ & -43.33 & -17.65 & -11.50 & -7.30  & -5.30  & -3.78  & -2.67  & -1.82  & -1.33  & -1.05  & -0.47  & -0.45  & -0.26  &  0.32  &  0.34 \\
+    \rowcolor[HTML]{fff5f4}
+    Avg.D(x$_m$)$_v$ & -31.73 & -14.53 & -9.94  & -6.27  & -4.51  & -3.11  & -2.06  & -1.20  & -0.74  & -0.51  & -0.00  &  0.00  &  0.10  &  0.78  &  0.82 \\
+    \rowcolor[HTML]{fff5f4}
+    $\Delta$D        &  11.60 &  3.12  &  1.56  &  1.03  &  0.79  &  0.67  &  0.61  &  0.62  &  0.59  &  0.54  &  0.47  &  0.45  &  0.36  &  0.46  &  0.48 \\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    }
+    \label{tab:detail_ablation_beta}
+\end{table*}
+
+\subsection{More Details on  Evaluation Metrics}
+Consistent with prior work~\cite{fastdetectgpt, imbd}, we adopt \textit{the Area Under the Receiver Operating Characteristic Curve (AUROC)} as the primary evaluation metric for assessing the performance of the MGT Detector.
+%
+While AUROC provides a threshold-independent measure of classification capability, it does not necessarily reflect the detector’s effectiveness at specific operating points, which are often critical in real-world deployments.
+
+To address this limitation, we incorporate \textit{TPR at a 5\% false positive rate (TPR@5\%)} as an important supplementary metric.
+%
+TPR@5\% reflects the detector’s sensitivity when operating under a strict false positive constraint, which is especially important for applications demanding high precision.
+
+Furthermore, considering the MIRAGE-SIG is a class-imbalanced dataset, we additionally report the \textit{Matthews Correlation Coefficient (MCC)} and \textit{Balanced Accuracy} to provide a more comprehensive evaluation.
+%
+MCC captures the overall quality of binary classifications by considering all four elements of the confusion matrix, making it particularly informative under class imbalance.
+%
+Balanced Accuracy, used in place of standard accuracy, is computed as the arithmetic mean of the true positive rate and true negative rate, making it better suited for evaluating performance on imbalanced datasets.
+
+Together, this diverse set of metrics provides a comprehensive assessment of the detector's performance, ensuring that the evaluation reflects both theoretical completeness and real-world applicability.
+
+\section{More details on Experiment}
+\subsection{Experiment Setup}
+\noindent \textbf{Device. }
+All of our experiments are conducted in Linux 4.18.0(CentOS 7), using a single NVIDIA A40 GPU with 48GB GPU memory.
+%
+The Python version is 3.10.16, the PyTorch version is 2.5.1, the Transformers version is 4.47.1, and the Datasets version is 3.2.0.
+
+\noindent \textbf{Training Dataset. }
+We train DetectAnyLLM in the dataset used in ImBD~\cite{imbd}, specifically, 500 pairs of HWT-MGT data, where MGT is machine-polished text created by GPT-3.5-Turbo.
+
+\noindent \textbf{LoRA Config. }
+Following the settings of ImBD~\cite{imbd}, we adopt a LoRA configuration specifically designed for causal language modeling, with a rank of 8, a LoRA alpha of 32, and a dropout rate of 0.1.
+
+\noindent \textbf{Settings for Reproducing ImBD. }
+We reproduced ImBD~\cite{imbd} for comparative evaluation, following the original training configuration described in the paper.
+%
+Specifically, we set the learning rate to 0.0001 and used a beta coefficient of 0.05.
+%
+The only modification made was increasing the number of training epochs from 2 (as reported in the original paper) to 5, in order to ensure full convergence of the model.
+%
+Throughout the training process, we monitored the model's performance on the validation set to prevent overfitting and to verify that the reproduced ImBD model maintained comparable performance to the original.
+
+\noindent \textbf{Settings for Training DetectAnyLLM. }
+We train DetectAnyLLM using the exact same hyperparameters as those used in our reproduction of ImBD~\cite{imbd}, including a learning rate of 0.0001 and 5 training epochs.
+%
+For the optimization objective in \textit{Direct Discrepancy Learning (DDL)}, we set the hyperparameter $\gamma$ to 100.
+%
+That is because increasing $\gamma$ beyond this value did not lead to further improvements in performance, suggesting that the model had fully converged.
+%
+Moreover, since the model's performance remains stable for larger values of $\gamma$, this setting also ensures compatibility with varying training environments, as the optimal value of $\gamma$ is unknown, we simply choose a sufficiently large value that provides a safe and generalizable configuration.
+
+
+\subsection{Empirical Validation of Redundant KL-Regularization}
+To evaluate the impact of the KL-regularization term in DPO-style training, we conduct ablation studies on a wide range of $\beta$ values, which directly control the strength of the implicit KL constraint. According to the formulation in Section 3.2, a larger $\beta$ enforces stronger alignment between the scoring model $f_\theta$ and the reference model $f_{ref}$, effectively constraining the learning objective toward distributional conformity rather than task-specific discriminability. 
+
+~\Cref{tab:detail_ablation_beta} provides compelling empirical evidence supporting our hypothesis that KL-regularization can be redundant—or even detrimental—for the MGTD task. As $\beta$ increases, we observe a consistent and significant degradation in detection performance across all evaluation metrics. For instance, the AUROC and AUPR on the training set drop from \textbf{0.9490}/\textbf{0.9566} at $\beta=0.05$ to 0.8542/0.8689 at $\beta=0.95$. Similar trends are observed on the validation set, where AUROC decreases from 0.6907 to 0.5632, and AUPR from 0.7075 to 0.5362.
+
+At low $\beta$ values, the discrepancy between D(x$_h$) and D(x$_m$) is substantial (e.g., $17.59$ on the training set at $\beta=0.05$), which allows the scoring model to effectively differentiate between natural and perturbed sequences. As $\beta$ increases, this margin rapidly collapses—dropping below $3.0$ by $\beta=0.30$, and approaching near-zero at higher values. The validation set exhibits a parallel pattern: the discrepancy narrows from $11.60$ at $\beta=0.05$ to merely $0.48$ at $\beta=0.95$.
+
+These results indicate that strong KL-regularization impairs the model's ability to learn task-oriented discriminative signals from training data. Instead of becoming a better detector, the scoring model is constrained to behave like a generic language model, limiting its effectiveness in distinguishing machine-generated text from human-written. This validates our theoretical intuition: while the KL term may serve to preserve internal knowledge in generic preference modeling tasks, it is counterproductive in MGTD.
+
+\subsection{More Details on Main Results}
+\noindent \textbf{Efficiency Improvement. }
+When using the scoring model $f_\theta$ as the sampling model $q_\phi$, as discussed in Section 3.2, DDL eliminates the need to load a separate reference model during training, unlike SPO~\cite{imbd}.
+% 
+This design enables DDL to train with a single model, leading to notable improvements in training efficiency.
+% 
+\Cref{tab:efficiency} presents a detailed comparison of training time and memory usage between SPO~\cite{imbd} and DDL.
+
+SPO~\cite{imbd} requires loading two large models simultaneously during training, resulting in high memory demands—specifically, 31.45GB for training with GPT-J-6B~\cite{gpt-j}. This exceeds the capacity of many commonly available GPUs.
+% 
+In contrast, DDL only requires 20.16GB of memory, making it feasible to train on widely accessible GPUs.
+
+\begin{table}[t]
+    \centering
+    \caption{Training time cost comparison between DDL and SPO~\cite{imbd}. The results are tested in ImBD~\cite{imbd}'s training dataset. Device: single NVIDIA A40. Model: GPT-J-6B~\cite{gpt-j}. ``Imp." represents Improvement, computed as -(new - old) / (old).}
+    \begin{tabular}{l|ccc}
+    \hline
+
+    \hline
+
+    \hline
+    Optim.          &  Batch Size & Time Cost/Epoch  &  Memory Usage\\
+    \hline
+    SPO~\cite{imbd} & 1 & 166s & 31.45GB\\
+    \hdashline
+    \rowcolor[HTML]{F4F7FE}
+    DDL(ours)& 1 & \textbf{116s} & \textbf{20.16GB}\\
+    \rowcolor[HTML]{F4F7FE}
+    Imp. & -- & \red{+30.12\%} & \red{+35.90\%}\\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    \label{tab:efficiency}
+\end{table}
+
+\begin{table*}[t]
+    \centering
+    \caption{Detail Results of different $\gamma$ in DDL. Metrics with subscript $_t$ correspond to the training set, and subscript $_v$ indicates evaluation on the polish task of MIRAGE-DIG. Avg.D(*) denotes the average discrepancy of *, where x$_h$ stands for human-written text and x$_m$ stands for machine-generated text. }
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{l|ccccccccccccccc}
+    \hline
+
+    \hline
+
+    \hline
+    & $\gamma=1$ & $\gamma=2$ & $\gamma=5$ & $\gamma=10$ & $\gamma=20$ & $\gamma = 30$ & $\gamma=40$ & $\gamma=50$ & $\gamma=60$ & $\gamma=70$ & $\gamma=80$ & $\gamma = 90$ & $\gamma=100$ & $\gamma=500$ & $\gamma=10000$\\
+    \hline
+    AUROC$_t$  &  0.9501 &  0.9910 & \textbf{0.9983} & 0.9964 & 0.9934 & 0.9900 & 0.9886 & 0.9883 & 0.9880 & 0.9879 & 0.9861 & 0.9861 & 0.9861 & 0.9861 & 0.9861\\
+    AUPR$_t$   &  0.9379 &  0.9910 & \textbf{0.9983} & 0.9965 & 0.9938 & 0.9911 & 0.9865 & 0.9888 & 0.9852 & 0.9852 & 0.9833 & 0.9833 & 0.9833 & 0.9833 & 0.9833\\
+    Avg.D(x$_h$)$_t$ & 0.07 & 0.14 &  0.20  &  0.27   &  0.54  &  0.80  &  1.08  &  1.45  &  1.55  &  1.73  &  1.91  &  1.91  &  1.91  &  1.91  &  1.91  \\
+    Avg.D(x$_m$)$_t$ & 0.95 & 1.88 &  4.86  &  8.92   &  17.24 &  24.64 &  31.82 &  37.93 &  40.81 &  41.92 &  42.12 &  42.12 &  42.12 &  42.12 &  42.12 \\
+    \hdashline
+    \rowcolor[HTML]{fff5f4}
+    AUROC$_v$  & 0.5481 &  0.6000  & 0.7833 & 0.8692 & 0.9257 & 0.9360 & \textbf{0.9377} & 0.9347 & 0.9251 & 0.9270 & 0.9259 & 0.9259 & 0.9259 & 0.9259 & 0.9259\\
+    \rowcolor[HTML]{fff5f4}
+    AUPR$_v$   & 0.5206 &  0.5562  & 0.7452 & 0.8735 & 0.9294 & \textbf{0.9472} & 0.9461 & 0.9458 & 0.9401 & 0.9382 & 0.9373 & 0.9373 & 0.9373 & 0.9373 & 0.9373\\
+    \rowcolor[HTML]{fff5f4}
+    Avg.D(x$_h$)$_v$ & 1.1 & 1.24  &  1.76  &  0.84  &  3.11  &   3.37  &  4.66  &  4.62  &  4.72  &  5.36  &  5.23  &  5.23  &  5.23  &  5.23  &  5.23  \\
+    \rowcolor[HTML]{fff5f4}
+    Avg.D(x$_m$)$_v$ & 1.36 & 1.85 &  4.86  &  7.11  &  16.09 &   24.22 &  32.96 &  34.86 &  36.75 &  39.86 &  39.43 &  39.43 &  39.43 &  39.43 &  39.43 \\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    }
+    \label{tab:detail_ablation_gamma}
+\end{table*}
+
+
+\subsection{Discussion of $\gamma$ in DDL}
+\noindent \textbf{Detail Look of $\gamma$'s effect. }
+~\Cref{tab:detail_ablation_gamma} shown, although there are clear performance peaks at specific values (e.g., $\gamma=5$ for the training set and $\gamma=30$–$40$ for the validation set), the metrics remain consistently high across a wide range of $\gamma$ values. For instance, even when $\gamma$ increases from 10 to 10000, AUROC$_t$ and AUPR$_t$ only experience a minor drop (from around 0.9964 to 0.9861), and AUROC$_v$ and AUPR$_v$ stay stable after reaching their respective optima.
+
+Meanwhile, AUROC$_v$ and AUPR$_v$ continue to improve up to $\gamma=30$–$\gamma=40$, reaching their peaks at $\gamma=30$ (AUPR$_v$ = 0.9472) and $\gamma=40$ (AUROC$_v$ = 0.9377), after which they plateau.
+
+\noindent \textbf{DDL's Robustness on $\gamma$. }
+While the average discrepancies and training metrics vary as $\gamma$ increases, the evaluation performance (AUROC$_v$ and AUPR$_v$) remains relatively stable across a broad range—from $\gamma=30$ to $\gamma=10000$. For example, AUROC$_v$ fluctuates within a narrow band around 0.93, and AUPR$_v$ stays above 0.93 even when $\gamma$ changes by orders of magnitude. This indicates that although $\gamma$ influences how positive the discrepancy of x$_m$ should be, the model's downstream generalization ability is not overly sensitive to its exact value.
+
+This plateauing effect indicates that once $\gamma$ surpasses a moderate threshold, the method maintains strong performance without being overly sensitive to further increases. Moreover, the saturation of Avg.D(x$_h$) and Avg.D(x$_m$) after a certain point suggests the model's behavior becomes consistent, avoiding unstable shifts.
+%
+This is a desirable property in practical scenarios, where tuning hyperparameters like $\gamma$ might be challenging or resource-intensive.
+
+\noindent \textbf{Explanation of $\gamma$'s Effectiveness. }
+The robustness of our method to the hyperparameter $\gamma$ arises naturally from the design of the \textit{Direct Discrepancy Learning (DDL)}. In DDL, $\gamma$ serves as a margin that guides the optimization: it encourages the model to keep the discrepancy score D(x$_m$) of MGT close to $\gamma$, while minimizing the discrepancy score D(x$_h$) for HWT toward zero. This setup constructs an explicit separation objective in the discrepancy space between HWT and MGT.
+
+\textit{We realized the goal of \textbf{learning to be a detector rather than another language model} by introducing such explicit separation objective. }
+
+A small $\gamma$ (e.g., 1–5) still may encourage separation, however, may not provide enough margin, leading to overlap between HWT and MGT discrepancies. As $\gamma$ increases, the model is encouraged to push D(x$_m$) further away from zero, thus improving distinguishability and enhancing performance—especially noticeable in the rise of AUROC/AUPR metrics from $\gamma=1$ to $\gamma=5$ and beyond.
+
+\noindent \textbf{Explanation of Performance Plateau. }
+Once $\gamma$ exceeds a certain threshold (e.g., $\gamma \geq 30$), we observe that performance metrics (both AUROC$_t$ and AUROC$_v$) are saturate. This indicates that the discrepancy between HWT and MGT has reached a sufficient margin: D(x$_h$) is consistently near 0 and D(x$_m$) is already large enough. Increasing $\gamma$ further only increases the target discrepancy for $x_m$ without changing the classification boundary. The model thus stabilizes, as it can no longer extract additional useful separation from a larger $\gamma$. This explains the observed robustness—DDL achieves effective separation and remains performance over a wide range of $\gamma$ values.
+
+\noindent \textbf{Reason of Setting $\gamma$ to 100. }
+We choose $\gamma=100$ in our main results for two key reasons. First, as shown in the ablation results, performance has already plateaued by $\gamma=100$, meaning this setting offers high performance while avoiding sensitivity to further hyperparameter tuning—making it a practical and reliable choice in real-world applications. Second, a higher $\gamma$ ensures a clear and consistent discrepancy margin, improving interpretability and stability across diverse datasets or models. In deployment scenarios, where extensive hyperparameter sweeps may be infeasible, such robustness is critical.
+
+\noindent \textbf{Summary. }
+As shown in ~\Cref{tab:detail_ablation_gamma}, there exists a threshold value $t_h$ such that the performance remains stable for all $\gamma \geq t_h$.
+%
+In contrast, setting $\gamma$ too small can lead to significantly degraded performance, while increasing $\gamma$ beyond $t_h$ does not cause any sharp decline.
+%
+Therefore, we recommend setting $\gamma$ to a relatively large value, since in real-world applications the optimal value is typically unknown.
+
+\subsection{Detection Results on specific LLM}
+We expand the main results in Section 5.1 in the specific LLM level to obtain the specific detection capabilities of different methods on texts generated by specific LLMs.
+
+\noindent \textbf{Results. }
+As shown in the following tables, DetectAnyLLM achieves consistently strong performance across all metrics, domains, tasks, and source LLMs.
+%
+On the Polish and Rewrite tasks, it outperforms previous state-of-the-art methods by an average margin of nearly 70\%.
+%
+In certain settings involving text generated by specific LLMs, FastDetectGPT\cite{fastdetectgpt} and ImBD\cite{imbd} slightly outperform DetectAnyLLM. We attribute this to the relative simplicity of the Generate task, which allows earlier methods to perform competitively.
+%
+Even in these cases, DetectAnyLLM trails by no more than $10^{-2}$ AUROC, suggesting that may have reached saturation on this task.
+
+As shown in ~\Cref{tab:gpt4o_gpt4omini} and ~\Cref{tab:claude3.5haiku_claude3.7sonnet}, the AUROC on DIG text polished by Claude-3.5-Haiku reaches \red{0.9903}, while that of Claude-3.7-Sonnet is \red{0.9096}. Similarly, the AUROC on SIG text rewritten by GPT-4o-mini reaches \red{0.9176}, compared to \red{0.8697} for GPT-4o.
+%
+These results indicate that detecting text from smaller LLMs is generally easier than from their larger counterparts.
+
+\input{tab/gpt4o_gpt4omini}
+\input{tab/gpto3mini_moonshotv1}
+\input{tab/deepseekr1_deepseekv3}
+\input{tab/claude3.5haiku_claude3.7sonnet}
+\input{tab/gemini2.0flash_flashlite}
+\input{tab/Doubao1.5pro_grok2}
+\input{tab/qwen2_r1distill}
+\input{tab/llama3.1_r1distill}
+\input{tab/qwq-plus}
+
+\clearpage
+\bibliographystyle{sec/ACM-Reference-Format}
+\bibliography{sec/ref}
+
+\end{document}

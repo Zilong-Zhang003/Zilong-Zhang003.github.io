@@ -1,0 +1,311 @@
+\begin{table*}[htbp]
+    \centering
+    \caption{Results across three tasks (Generate, Polish, Rewrite) under two evaluation settings (MIRAGE-DIG and MIRAGE-SIG). All methods, except for RoBERTa-Base/Large, employ GPT-Neo-2.7B~\cite{gpt-neo} as the scoring model. Following with the experiment settings of~\cite{imbd}, the NPR~\cite{lrrandnpr} and DetectGPT~\cite{detectgpt} use T5-3B~\cite{t5} to generate perturbations, while Fast-DetectGPT~\cite{fastdetectgpt} utilizes GPT-J-6B~\cite{gpt-j} to generate samples. $\spadesuit$ indicates a training-based method, whereas $\diamondsuit$ denotes a method that requires multiple model invocations. "Imp." represents Improvement over previous SOTA, computed as $(new - old) / (1.0 - old)$. Metrics: AUROC, Balanced Accuracy, MCC, and TPR@5\%. DetectAnyLLM significantly outperforms all baselines across all tasks and settings.}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{l|cccc|cccc|cccc}
+    \hline
+
+    \hline
+
+    \hline
+    \multicolumn{13}{c}{\textbf{MIRAGE-DIG (Disjoint-Input Generation)}}\\
+    \hline
+
+    \hline
+
+    \hline
+    \multirow{2}{*}{Methods}&\multicolumn{4}{c|}{Generate}&\multicolumn{4}{c|}{Polish}&\multicolumn{4}{c}{Rewrite} \\
+    &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  \\
+    \hline
+
+    \hline
+    Likelihood~\cite{likelihood} & 0.4936 & 0.5091 & 0.0183 & 0.0147 & 0.4653 & 0.5000 & 0.0000 & 0.0214 & 0.4337 & 0.5000 & 0.0000 & 0.0148 \\
+    LogRank~\cite{logrank} & 0.4992 & 0.5128 & 0.0260 & 0.0220 & 0.4512 & 0.5000 & 0.0000 & 0.0195 & 0.4225 & 0.5000 & 0.0000 & 0.0132 \\
+    Entropy~\cite{entropy} & 0.6522 & 0.6150 & 0.2543 & 0.1099 & 0.5543 & 0.5417 & 0.1247 & 0.0954 & 0.5805 & 0.5566 & 0.1650 & 0.1189 \\
+    RoBERTa-Base~\cite{roberta} $\spadesuit$ & 0.5523 & 0.5397 & 0.1434 & 0.1250 & 0.4859 & 0.5010 & 0.0088 & 0.0460 & 0.5020 & 0.5049 & 0.0293 & 0.0569 \\
+    RoBERTa-Large~\cite{roberta} $\spadesuit$ & 0.4716 & 0.5217 & 0.0842 & 0.0871 & 0.5171 & 0.5151 & 0.0340 & 0.0633 & 0.5570 & 0.5385 & 0.0864 & 0.0895 \\
+    LRR~\cite{lrrandnpr} & 0.5215 & 0.5341 & 0.0777 & 0.0701 & 0.4081 & 0.5000 & 0.0000 & 0.0200 & 0.3930 & 0.5000 & 0.0000 & 0.0188 \\
+    DNA-GPT~\cite{dna-gpt} $\diamondsuit$ & 0.5733 & 0.5595 & 0.1196 & 0.0776 & 0.4771 & 0.5004 & 0.0110 & 0.0309 & 0.4453 & 0.5001 & 0.0080 & 0.0251 \\
+    NPR~\cite{lrrandnpr} $\diamondsuit$ & 0.6120 & 0.6140 & 0.2604 & 0.0191 & 0.5071 & 0.5370 & 0.1071 & 0.0318 & 0.4710 & 0.5201 & 0.0663 & 0.0226 \\
+    DetectGPT~\cite{detectgpt} $\diamondsuit$ & 0.6402 & 0.6258 & 0.2758 & 0.0275 & 0.5469 & 0.5531 & 0.1328 & 0.0355 & 0.5061 & 0.5266 & 0.0826 & 0.0283 \\
+    Fast-DetectGPT~\cite{fastdetectgpt} & 0.7768 & 0.7234 & 0.4628 & 0.4310 & 0.5720 & 0.5570 & 0.1293 & 0.1189 & 0.5455 & 0.5432 & 0.1015 & 0.1025 \\
+    ImBD~\cite{imbd} $\spadesuit$ & 0.8597 & 0.7738 & 0.5497 & 0.4065 & 0.7888 & 0.7148 & 0.4300 & 0.2730 & 0.7825 & 0.7068 & 0.4139 & 0.2933 \\
+    \hdashline
+    
+    \hdashline
+    \rowcolor[HTML]{fff5f4}
+    
+    \textbf{DetectAnyLLM} (ours) $\spadesuit$ & \textbf{0.9525} & \textbf{0.8988} & \textbf{0.7975} & \textbf{0.7770} & \textbf{0.9297} & \textbf{0.8732} & \textbf{0.7487} & \textbf{0.7756} & \textbf{0.9234} & \textbf{0.8705} & \textbf{0.7447} & \textbf{0.7778} \\
+    
+    \rowcolor[HTML]{fff5f4}
+    
+    \textbf{Imp.} & \red{+66.14\%} & \red{+55.26\%} & \red{+55.03\%} & \red{+62.43\%} & \red{+66.71\%} & \red{+55.54\%} & \red{+55.91\%} & \red{+69.13\%} & \red{+64.78\%} & \red{+55.83\%} & \red{+56.44\%} & \red{+68.56\%} \\
+    \hline
+
+    \hline
+
+    \hline
+    \multicolumn{13}{c}{\textbf{MIRAGE-SIG (Shared-Input Generation)}}\\
+    \hline
+
+    \hline
+
+    \hline
+    \multirow{2}{*}{Methods}&\multicolumn{4}{c|}{Generate}&\multicolumn{4}{c|}{Polish}&\multicolumn{4}{c}{Rewrite} \\
+    &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  &  AUROC  &  Accuracy  &  MCC  &  TPR@5\%  \\
+    \hline
+
+    \hline
+    Likelihood~\cite{likelihood} & 0.4968 & 0.5207 & 0.0196 & 0.0145 & 0.4599 & 0.5002 & 0.0030 & 0.0233 & 0.4319 & 0.5000 & 0.0000 & 0.0111 \\
+    LogRank~\cite{logrank} & 0.5008 & 0.5183 & 0.0182 & 0.0186 & 0.4468 & 0.5000 & 0.0000 & 0.0211 & 0.4221 & 0.5000 & 0.0000 & 0.0118 \\  
+    Entropy~\cite{entropy} & 0.6442 & 0.6123 & 0.1592 & 0.1074 & 0.5640 & 0.5439 & 0.0516 & 0.0946 & 0.5858 & 0.5645 & 0.0918 & 0.1198 \\  
+    RoBERTa-Base~\cite{roberta} $\spadesuit$ & 0.5368 & 0.5392 & 0.0529 & 0.1101 & 0.4741 & 0.5011 & 0.0048 & 0.0395 & 0.5099 & 0.5122 & 0.0221 & 0.0668 \\
+    RoBERTa-Large~\cite{roberta} $\spadesuit$ & 0.4703 & 0.5236 & 0.0417 & 0.0910 & 0.5150 & 0.5157 & 0.0283 & 0.0702 & 0.5576 & 0.5426 & 0.0405 & 0.0762 \\
+    LRR~\cite{lrrandnpr} & 0.5214 & 0.5311 & 0.0314 & 0.0657 & 0.4076 & 0.5000 & 0.0000 & 0.0238 & 0.3978 & 0.5000 & 0.0000 & 0.0174 \\    
+    DNA-GPT~\cite{dna-gpt} $\diamondsuit$ & 0.5759 & 0.5647 & 0.0603 & 0.0813 & 0.4788 & 0.5001 & 0.0036 & 0.0340 & 0.4457 & 0.5002 & 0.0048 & 0.0258 \\
+    NPR~\cite{lrrandnpr} $\diamondsuit$ & 0.6088 & 0.6170 & 0.1571 & 0.0185 & 0.5074 & 0.5277 & 0.0612 & 0.0293 & 0.4738 & 0.5204 & 0.0340 & 0.0177 \\
+    DetectGPT~\cite{detectgpt} $\diamondsuit$ & 0.6353 & 0.6241 & 0.1719 & 0.0193 & 0.5434 & 0.5515 & 0.0668 & 0.0309 & 0.5079 & 0.5260 & 0.0431 & 0.0239 \\
+    Fast-DetectGPT~\cite{fastdetectgpt} & 0.7706 & 0.7193 & 0.2078 & 0.4200 & 0.5727 & 0.5619 & 0.0607 & 0.1238 & 0.5480 & 0.5495 & 0.0525 & 0.1097 \\
+    ImBD~\cite{imbd} $\spadesuit$ & 0.8612 & 0.7791 & 0.5599 & 0.4183 & 0.7951 & 0.7199 & 0.4451 & 0.3036 & 0.7694 & 0.6920 & 0.3936 & 0.2868 \\
+    \hdashline
+    
+    \hdashline
+    \rowcolor[HTML]{fff5f4}
+    \textbf{DetectAnyLLM} (ours) $\spadesuit$ & \textbf{0.9526} & \textbf{0.9059} & \textbf{0.8119} & \textbf{0.7722} & \textbf{0.9316} & \textbf{0.8740} & \textbf{0.7483} & \textbf{0.7779} & \textbf{0.9158} & \textbf{0.8643} & \textbf{0.7320} & \textbf{0.7574} \\
+    
+    \rowcolor[HTML]{fff5f4}
+    \textbf{Imp.} & \red{+65.85\%} & \red{+57.40\%} & \red{+57.25\%} & \red{+60.84\%} & \red{+66.62\%} & \red{+55.02\%} & \red{+54.64\%} & \red{+68.11\%} & \red{+63.49\%} & \red{+55.94\%} & \red{+55.80\%} & \red{+65.98\%} \\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    }
+    
+    \label{tab:main_results}
+\end{table*}
+\section{Experiment}
+\subsection{Main Results}\label{main_result}
+% We evaluate \textit{DetectAnyLLM} against a broad range of strong baselines across two challenging subsets---\textbf{MIRAGE-DIG} and \textbf{MIRAGE-SIG}.
+% %
+% Across all three MGTD tasks (Generate, Polish, Rewrite), our method consistently achieves the highest scores in all metrics, including AUROC, Accuracy, MCC, and TPR@5\%.
+
+\noindent \textbf{Training settings. }
+To achieve a fair comparison, the scoring model used in DetectAnyLLM is the same as ~\cite{imbd}(i.e., GPT-Neo-2.7B~\cite{gpt-neo}).
+%
+Additionally, we adopt the same training dataset as~\cite{imbd} to maintain consistency.
+%
+Further training settings are provided in the Supplementary Material.
+%on hyperparameters such as learning rate and number of training epochs 
+We set the $\gamma$ in DDL's training objective to 100, and will further discuss how $\gamma$ affects the detector's performance in \Cref{ablation_study}.
+
+\noindent \textbf{Baselines. }
+For a comprehensive comparison, we compare the performance of our method with classical methods, advanced zero-shot methods, and state-of-the-art training-based methods.
+%
+The classical methods including \textit{Likelihood}~\cite{likelihood}, \textit{Log-Rank}~\cite{logrank}, \textit{LRR}~\cite{lrrandnpr}, and \textit{Entropy}~\cite{entropy}.
+%
+The advanced zero-shot methods includes \textit{DetectGPT}~\cite{detectgpt}, \textit{NPR}~\cite{lrrandnpr}, and \textit{Fast-DetectGPT}~\cite{fastdetectgpt}.
+%
+The training-based methods includes \textit{RoBERTa series}~\cite{roberta, likelihood} and \textit{ImBD}~\cite{imbd}.
+
+\noindent \textbf{Results of MIRAGE-DIG. }
+As the top of \Cref{tab:main_results} shown, DetectAnyLLM achieves substantial performance improvement over all baselines across all metrics and tasks.
+%
+Specifically, it delivers AUROC gains of up to \red{+63.49\%}$\sim$ \red{+66.71\%}, with MCC improvements reaching up to \red{+57.25\%}.
+%
+DetectAnyLLM also maintains robust TPR@5\% across all tasks, outperforming previous training-based SOTA ImBD~\cite{imbd} by large margins (\red{+60.84\%}$\sim$ \red{+69.13\%}).
+
+\noindent \textbf{Results of MIRAGE-SIG. }
+As the bottom of \Cref{tab:main_results} shown, DetectAnyLLM continues to lead under the more challenging MIRAGE-SIG setting, reaching AUROC of \red{0.9526}, Balanced Accuracy of \red{0.9059}, and TPR@5\% up to \red{0.7779}, again greatly surpassing all other methods. 
+%
+Notably, even in the Rewrite task—--where performance is generally lower across all models--—DetectAnyLLM maintains high robustness (AUROC: \red{0.9158}, TPR@5\%: \red{0.7574}).
+%
+The results highlight the detector’s strong generalization capability across diverse source LLMs, even when these LLMs generate or revise the same underlying text, demonstrating the robustness of our method in real-world applications.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Results of detection on the previous test sets. $\spadesuit$ indicates a training-based method, whereas $\diamondsuit$ denotes a method that requires multiple model invocations. "Imp." represents Improvement, computed as $(new - old) / (1.0 - old)$.}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{l|ccc}
+    \hline
+
+    \hline
+
+    \hline
+    \multicolumn{4}{c}{\textbf{ImBD~\cite{imbd} Test Dataset (GPT-4o polished)}}\\
+    \hline
+
+    \hline
+
+    \hline
+    Methods&XSum~\cite{xsum}&Writing~\cite{writting_prompts} & PubMed~\cite{pubmedqa}\\
+    \hline
+
+    \hline
+    Likelihood~\cite{likelihood} & 0.4396 & 0.8077 & 0.4596\\
+    LogRank~\cite{logrank} & 0.4002 & 0.7694 & 0.4472\\
+    Entropy~\cite{entropy} & 0.6122 & 0.2802 & 0.5899\\
+    RoBERTa-Base~\cite{roberta} $\spadesuit$ & 0.4921 & 0.4774 & 0.2496 \\
+    RoBERTa-Large~\cite{roberta} $\spadesuit$ & 0.4782 & 0.4708 & 0.3089 \\
+    LRR~\cite{lrrandnpr} & 0.3095 & 0.6214 & 0.4710 \\
+    DNA-GPT~\cite{dna-gpt} $\diamondsuit$ & 0.4974 & 0.7478 & 0.3151 \\
+    NPR~\cite{lrrandnpr} $\diamondsuit$ & 0.5065 & 0.8444 & 0.3740 \\
+    DetectGPT~\cite{detectgpt} $\diamondsuit$ & 0.6217 & 0.8771 & 0.5612\\
+    Fast-DetectGPT~\cite{fastdetectgpt} & 0.6293 & 0.8324 & 0.6175\\
+    ImBD~\cite{imbd} $\spadesuit$ & 0.9486 & 0.9468 & 0.7743\\
+    \hdashline
+    
+    \hdashline
+    \rowcolor[HTML]{fff5f4}
+    \textbf{DetectAnyLLM} (ours) $\spadesuit$ & \textbf{0.9880} & \textbf{0.9671} & \textbf{0.8817} \\
+    
+    \rowcolor[HTML]{fff5f4}
+    \textbf{Imp.} & \red{+80.16\%} & \red{+38.16\%} & \red{+47.59\%} \\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    }
+    
+    \label{tab:previous_dataset}
+\end{table}
+
+\noindent \textbf{Detection on the previous test sets. }
+We evaluate the performance of DetectAnyLLM on the three test sets used by ImBD~\cite{imbd}, comprising 150 texts sampled from XSum~\cite{xsum}, WritingPrompts~\cite{writting_prompts}, and PubMedQA~\cite{pubmedqa}, respectively, each polished by GPT-4o.
+%
+As ~\Cref{tab:previous_dataset} shown, DetectAnyLLM consistently outperforms all existing MGTD methods.
+
+However, while prior methods perform reasonably well on these test sets, their performance degraded greatly on MIRAGE, as ~\Cref{tab:main_results} shown.
+%
+This observation reveals the limitations of existing benchmarks in fully capturing detector capabilities and further underscores the importance of MIRAGE as a more challenging and comprehensive benchmark for evaluating detection robustness.
+
+\noindent \textbf{Efficiency comparison. }
+Since DDL performs optimization without relying on a reference model, it achieves substantial improvements in training efficiency compared to \textit{Style Preference Optimization (SPO)}~\cite{imbd}.
+%
+DDL demonstrates a \red{+30.12\%} reduction in training time and a \red{+35.90\%} reduction in memory consumption relative to SPO~\cite{imbd}.
+%
+Detailed results are provided in Supplementary Material.
+
+
+\subsection{Ablation Study}\label{ablation_study}
+\noindent \textbf{Ablation on parameter $\gamma$. }
+As shown in ~\Cref{tab:ablation_gamma}, DDL exhibits strong robustness for the values of $\gamma$.
+% 
+Compared to the results in ~\Cref{tab:main_results}, for all selected values of $\gamma$, the trained detector consistently outperforms all prior state-of-the-art methods in terms of AUROC.
+%
+We provide detail results and further perform comprehensive analysis and discussion later in Supplementary Material.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Results of different $\gamma$ in DDL. Metrics with subscript $_t$ correspond to the training set, and subscript $_v$ indicates evaluation on the polish task of MIRAGE-DIG.}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{l|cccccc}
+    \hline
+
+    \hline
+
+    \hline
+    & $\gamma=10$  & $\gamma=20$ & $\gamma = 50$  & $\gamma=100$  & $\gamma=500$ & $\gamma=10000$\\
+    \hline
+    AUROC$_t$  &  \textbf{0.9964} & 0.9934 & 0.9883 & 0.9861 & 0.9861 & 0.9861\\
+    AUPR$_t$   &  \textbf{0.9965} & 0.9938 & 0.9888 & 0.9833 & 0.9833 & 0.9833\\
+    \hdashline
+    \rowcolor[HTML]{fff5f4}
+    AUROC$_v$  & 0.8692  & 0.9257 & \textbf{0.9347} & 0.9259 & 0.9259 & 0.9259\\
+    \rowcolor[HTML]{fff5f4}
+    AUPR$_v$   & 0.8735  & 0.9294 & \textbf{0.9458} & 0.9373 & 0.9373 & 0.9373\\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    }
+    \label{tab:ablation_gamma}
+\end{table}
+
+\noindent \textbf{Ablation on KL-strength $\beta$ in SPO~\cite{imbd}. } We provide comprehensive experiments and confirm our point in~\Cref{redundant KL-regularization}.
+%
+For more information, please see Supplementary Material.
+
+\noindent \textbf{Ablation on model size. }
+We retrain Qwen2-0.5B~\cite{qwen2}, GPT-Neo-2.7B~\cite{gpt-neo}, and GPT-J-6B~\cite{gpt-j} using SPO~\cite{imbd} and DDL, while keeping the training data and optimization settings fixed.
+%
+The models are then evaluated on the \textit{Polish} task of MIRAGE-DIG.
+
+As~\Cref{tab:ablation_model_size} shown, the DDL-optimized detector consistently outperforms the SPO~\cite{imbd}-optimized ones across all model sizes, confirming DDL's robustness and adaptability.
+%
+Notably, DDL achieves strong performance even with small models, such as Qwen2-0.5B~\cite{qwen2}, and scales effectively with larger backbones.
+%
+This result highlights the effectiveness of DDL in fully leveraging model capacity.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Ablation study on the impact of scoring model size. All models are trained on the same data and evaluated on the MIRAGE-SIG \textit{Rewrite} task. Improvement is marked \red{red}.}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{c|lcccc}
+    \hline
+
+    \hline
+
+    \hline
+    Method & Base Model &  AUROC  &  Accuracy  &  MCC & TPR@5\%\\
+    \hline
+    \multirow{3}{*}{SPO~\cite{imbd}}&Qwen2-0.5B~\cite{qwen2} & 0.8570 & 0.7816 & 0.5632 & 0.4508\\
+    &GPT-Neo-2.7B~\cite{gpt-neo}& 0.7694 & 0.6920 & 0.3936 & 0.2868\\
+    &GPT-J-6B~\cite{gpt-j}& 0.8367 & 0.7557 & 0.5155 & 0.4722\\
+    \hline
+    \multirow{6}{*}{DDL (ours)}&\multirow{2}{*}{Qwen2-0.5B~\cite{qwen2}} & 0.9370 & 0.9071 & 0.8169 & 0.8575\\
+    && \red{+55.94\%} & \red{+57.46\%} & \red{+58.08\%} & \red{+74.05\%}\\
+    \cdashline{2-6}
+    &\multirow{2}{*}{GPT-Neo-2.7B~\cite{gpt-neo}}& 0.9158 & 0.8643 & 0.7320 & 0.7574\\
+    && \red{+63.49\%} & \red{+55.94\%} & \red{+55.80\%} & \red{+65.98\%}\\
+    \cdashline{2-6}
+    &\multirow{2}{*}{GPT-J-6B~\cite{gpt-j}}& 0.8909 & 0.8424 & 0.6878 & 0.6047\\
+    && \red{+33.19\%} & \red{+35.49\%} & \red{+35.56\%} & \red{+25.10\%}\\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    }
+    \label{tab:ablation_model_size}
+\end{table}
+
+\noindent \textbf{Ablation on normalization $\sigma$. }\label{ablation_on_sigma}
+% Since DDL optimizes the scoring model by directly learning discrepancy, the normalization term $\sigma$ plays a critical role during training.
+%
+% To assess the impact of normalization item $\sigma$ in discrepancy, we conduct an ablation study using DDL to optimize the same scoring model with and without the inclusion of the normalization term $\sigma$ in the objective.
+As shown in~\Cref{tab:ablation_normalization}, the removal of $\sigma$ leads to a substantial degradation in performance across all metrics, highlighting the importance of $\sigma$ for stable and effective optimization.
+%
+Despite this, DDL without normalization still surpasses previous state-of-the-art methods on most metrics reported in~\Cref{tab:main_results}, underscoring the robustness of DDL.
+%
+We suggest that the normalization item $\sigma$ helps standardize output across diverse source LLMs and domains, thereby facilitating more consistent and generalizable learning.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Ablated result of $\sigma$. ``norm.'' means ``normalization''. ``w/'' means ``with'' and ``w/o'' means ``without''. Scoring model: GPT-Neo-2.7B~\cite{gpt-neo}. Benchmark: MIRAGE-DIG-polish.}
+    \begin{tabular}{l|cccc}
+    \hline
+
+    \hline
+
+    \hline
+         &  AUROC  &  Accuracy  &  MCC & TPR@5\%\\
+    \hline
+    DDL$_{\textbf{w/o}\enspace norm.}$ & 0.6923 & 0.6604 & 0.3244 & 0.0999\\
+    \hdashline
+    \rowcolor[HTML]{fff5f4}
+    DDL$_{\textbf{w/}\enspace norm.}$& \textbf{0.9261} & \textbf{0.8691} & \textbf{0.7399} & \textbf{0.7615}\\
+    \hline
+
+    \hline
+
+    \hline
+    \end{tabular}
+    \label{tab:ablation_normalization}
+\end{table}
