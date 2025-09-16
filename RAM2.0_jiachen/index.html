@@ -1,0 +1,2156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAM++ - Research Paper</title>
+    <link rel="icon" href="../images/MIRAGE_logo.png" type="image/png" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Lato:wght@300;400;700&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+  </head>
+  <body>
+    <!-- 主标题区域 -->
+    <header class="hero">
+      <div class="hero-content">
+        <div class="title-animation">
+          <h1 class="main-title">
+            <span class="title-word">RAM++</span>
+          </h1>
+          <h2 class="sub-title">
+            <u>R</u>obust Representation Learning via <br />
+            <u>A</u>daptive <u>M</u>ask for All-in-One Image Restoration
+          </h2>
+
+          <!-- 作者信息 -->
+          <div class="authors-list" id="authors">
+            <a class="author-link" target="_blank">Zilong Zhang<sup>1</sup></a>
+            <span class="author-separator">,</span>
+            <a class="author-link" target="_blank">Chujie Qin<sup>1</sup></a>
+            <span class="author-separator">,</span>
+            <a class="author-link" target="_blank">Chunle Guo<sup>1</sup></a>
+            <span class="author-separator">,</span>
+            <a class="author-link" target="_blank">Yong Zhang<sup>2,1</sup></a>
+            <span class="author-separator">,</span>
+            <a class="author-link" target="_blank"
+              >Ming-Ming Cheng<sup>1</sup></a
+            >
+            <span class="author-separator">,</span>
+            <a class="author-link" target="_blank">Chongyi Li<sup>1,*</sup></a>
+          </div>
+
+          <!-- 单位信息 -->
+          <div class="affiliation">
+            <p
+              data-en="<sup>1</sup> VCIP, College of Computer Science, Nankai University<br> <sup>2</sup> Chongqing Chang’an Wangjiang Industrial Group Co., Ltd"
+              data-zh="<sup>1</sup> 南开大学计算机学院媒体计算实验室<br> <sup>2</sup> 重庆长安万江实业集团有限公司"
+            >
+              <sup>1</sup> VCIP, College of Computer Science,, Nankai University
+              <br />
+              <sup>2</sup> Chongqing Chang’an Wangjiang Industrial Group Co.
+            </p>
+          </div>
+          <div class="author-notes">
+            <p
+              data-en="<sup>*</sup>Corresponding Author"
+              data-zh="<sup>*</sup>通讯作者"
+            >
+              <sup>*</sup>Corresponding Author
+            </p>
+          </div>
+          <!-- <div class="subtitle">
+                    <p data-en="Revolutionary depth estimation technology for any environmental conditions" data-zh="突破性的深度估计技术，适应任何环境条件">Revolutionary depth estimation technology for any environmental conditions</p>
+                </div> -->
+        </div>
+
+        <!-- 交互按钮 -->
+        <div class="cta-buttons">
+          <button class="cta-btn primary" id="paper-btn">
+            <i class="fas fa-file-pdf"></i>
+            <span data-en="Paper" data-zh="阅读论文">Paper</span>
+          </button>
+          <button class="cta-btn arxiv" id="arxiv-btn">
+            <img src="image/arxiv.png" alt="arXiv" class="btn-icon" />
+            <span data-en="arXiv" data-zh="arXiv">arXiv</span>
+          </button>
+          <button class="cta-btn secondary" id="code-btn">
+            <i class="fab fa-github"></i>
+            <span data-en="Code" data-zh="查看代码">Code</span>
+          </button>
+          <button class="cta-btn huggingface-model" id="model-btn">
+            <img
+              src="image/huggingface_logo.svg"
+              alt="Hugging Face"
+              class="btn-icon"
+            />
+            <span data-en="Model" data-zh="模型">Model</span>
+          </button>
+        </div>
+      </div>
+      <nav class="navbar">
+        <div class="nav-container">
+          <div class="nav-logo">
+            <i class="fas fa-fingerprint"></i>
+            <span class="logo-animated-text">RAM++</span>
+          </div>
+          <div class="nav-menu">
+            <a
+              href="#abstract"
+              class="nav-link"
+              data-en="Abstract"
+              data-zh="摘要"
+              >Abstract</a
+            >
+            <a
+              href="#overview"
+              class="nav-link"
+              data-en="Overview"
+              data-zh="概述"
+              >Overview</a
+            >
+            <a
+              href="#comparison"
+              class="nav-link"
+              data-en="Comparison"
+              data-zh="对比"
+              >Comparison</a
+            >
+            <a
+              href="#citation"
+              class="nav-link"
+              data-en="Citation"
+              data-zh="引用"
+              >Citation</a
+            >
+            <div class="language-switcher">
+              <button class="lang-btn active" data-lang="en">EN</button>
+              <span class="lang-separator">|</span>
+              <button class="lang-btn" data-lang="zh">中文</button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- 滚动指示器 -->
+      <div class="scroll-indicator">
+        <div class="scroll-arrow">
+          <i class="fas fa-chevron-down"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- 摘要部分 -->
+    <section class="abstract-section" id="abstract">
+      <div class="container scroll-target">
+        <div class="section-header">
+          <h2 class="section-title" data-en="Abstract" data-zh="摘要">
+            Abstract
+          </h2>
+          <div class="section-divider"></div>
+        </div>
+
+        <!-- 详细摘要文本 -->
+        <!-- 详细摘要文本 -->
+        <div class="abstract-text-container">
+          <div class="abstract-paragraph">
+            <p
+              data-en="This work presents Robust Representation Learning via Adaptive Mask (RAM++), a two-stage framework for all-in-one image restoration. RAM++ integrates high-level semantic understanding with low-level texture generation to achieve content-oriented robust restoration. It addresses the limitations of existing degradation-oriented methods in extreme scenarios (e.g., degradations are strongly coupled with image structures). RAM++ also mitigates common challenges such as unbalanced performance across tasks, overfitting to seen degradations, and weak generalization to unseen ones through three key designs: 1) Adaptive Semantic-Aware Mask (AdaSAM): a pre-training strategy that applies pixel-level masks to semantically rich and textured regions. This design enables the network to learn both generative priors and image content priors from various degradations. 2) Mask Attribute Conductance (MAC): a selective fine-tuning strategy that adjusts the layers with higher contributions to bridge the integrity gap between masked pre-training and full-image fine-tuning, while retaining learned priors. 3) Robust Feature Regularization (RFR): a strategy that leverages DINOv2’s semantically consistent and degradation-invariant representations, together with efficient feature fusion, to achieve faithful and semantically coherent restoration. With these designs, RAM++ achieves robust, well-balanced, and state-of-the-art performance across seen, unseen, extreme, and mixed degradations."
+              data-zh="本文提出了一种基于自适应掩码的鲁棒表征学习方法（RAM++），这是一个面向全能图像复原的两阶段框架。RAM++ 将高层语义理解与低层纹理生成相结合，实现了内容导向的鲁棒复原。它克服了现有退化导向方法在极端场景（例如退化与图像结构强耦合）下的局限性。同时，RAM++ 通过三项关键设计缓解了常见问题，包括任务间性能不均衡、对已见退化的过拟合以及对未见退化的泛化不足：1）自适应语义感知掩码（AdaSAM）：一种在语义丰富和纹理显著区域施加像素级掩码的预训练策略，使网络能够同时学习生成先验和图像内容先验。2）掩码属性传导（MAC）：一种选择性微调策略，调整贡献较高的层，以弥合掩码预训练与全图微调之间的完整性差距，同时保留已学得的先验。3）鲁棒特征正则化（RFR）：一种利用 DINOv2 语义一致且退化不变的表征，并结合高效特征融合的策略，从而实现忠实且语义一致的复原。凭借这些设计，RAM++ 在已见、未见、极端和混合退化场景下均取得了鲁棒、均衡且最先进的性能。"
+            >
+              This work presents Robust Representation Learning via Adaptive
+              Mask (RAM++), a two-stage framework for all-in-one image
+              restoration. RAM++ integrates high-level semantic understanding
+              with low-level texture generation to achieve content-oriented
+              robust restoration. It addresses the limitations of existing
+              degradation-oriented methods in extreme scenarios (e.g.,
+              degradations are strongly coupled with image structures). RAM++
+              also mitigates common challenges such as unbalanced performance
+              across tasks, overfitting to seen degradations, and weak
+              generalization to unseen ones through three key designs: 1)
+              Adaptive Semantic-Aware Mask (AdaSAM): a pre-training strategy
+              that applies pixel-level masks to semantically rich and textured
+              regions. This design enables the network to learn both generative
+              priors and image content priors from various degradations. 2) Mask
+              Attribute Conductance (MAC): a selective fine-tuning strategy that
+              adjusts the layers with higher contributions to bridge the
+              integrity gap between masked pre-training and full-image
+              fine-tuning, while retaining learned priors. 3) Robust Feature
+              Regularization (RFR): a strategy that leverages DINOv2’s
+              semantically consistent and degradation-invariant representations,
+              together with efficient feature fusion, to achieve faithful and
+              semantically coherent restoration. With these designs, RAM++
+              achieves robust, well-balanced, and state-of-the-art performance
+              across seen, unseen, extreme, and mixed degradations.
+            </p>
+          </div>
+        </div>
+
+        <!-- 特性摘要卡片
+            <div class="abstract-content">
+                <div class="abstract-card">
+                    <div class="abstract-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="abstract-text">
+                        <h3 data-en="Innovation Breakthrough" data-zh="创新突破">Innovation Breakthrough</h3>
+                        <p data-en="This research proposes a revolutionary depth estimation method that maintains high-precision depth perception capabilities under various complex environmental conditions." data-zh="本研究提出了一种革命性的深度估计方法，能够在各种复杂环境条件下保持高精度的深度感知能力。">This research proposes a revolutionary depth estimation method that maintains high-precision depth perception capabilities under various complex environmental conditions.</p>
+                    </div>
+                </div>
+                
+                <div class="abstract-card">
+                    <div class="abstract-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="abstract-text">
+                        <h3 data-en="Technical Advantages" data-zh="技术优势">Technical Advantages</h3>
+                        <p data-en="Through advanced neural network architectures and adaptive algorithms, robust handling of factors such as lighting changes, weather conditions, and object materials is achieved." data-zh="通过先进的神经网络架构和自适应算法，实现了对光照变化、天气条件、物体材质等因素的robust处理。">Through advanced neural network architectures and adaptive algorithms, robust handling of factors such as lighting changes, weather conditions, and object materials is achieved.</p>
+                    </div>
+                </div>
+                
+                <div class="abstract-card">
+                    <div class="abstract-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="abstract-text">
+                        <h3 data-en="Performance Results" data-zh="性能表现">Performance Results</h3>
+                        <p data-en="Significant performance improvements have been achieved on multiple benchmark datasets, providing strong technical support for computer vision and robotics fields." data-zh="在多个基准数据集上取得了显著的性能提升，为计算机视觉和机器人领域提供了强有力的技术支撑。">Significant performance improvements have been achieved on multiple benchmark datasets, providing strong technical support for computer vision and robotics fields.</p>
+                    </div>
+                </div>
+            </div> -->
+      </div>
+    </section>
+
+    <!-- overview 部分 -->
+    <section class="overview-section" id="overview">
+      <div class="container scroll-target">
+        <div class="section-header">
+          <h2 class="section-title" data-en="overview" data-zh="方法">
+            overview
+          </h2>
+          <div class="section-divider"></div>
+        </div>
+
+        <!-- Teaser 图片 -->
+        <div class="overview-image-container">
+          <img
+            src="images/pipeline.jpg"
+            alt="RAM++ - Teaser"
+            class="teaser-image lazy-load"
+            loading="lazy"
+          />
+          <div class="image-placeholder"></div>
+        </div>
+
+        <div class="overview-caption">
+          <p
+            data-en="An illustration of our overall pipeline. 
+                    1) Pre-training the model with the Adaptive Semantic-Aware Mask image method tailored to low-level vision. We mask the degraded images' semantically and texturally rich regions (\ie, high-information regions) at the pixel level with a 50% masking ratio and reconstruct the clean images.
+                    2) Fine-tuning is performed to bridge the input integrity gap that arises when transitioning from masked inputs during pre-training to full images during inference. We assess the contribution of each network layer to addressing this gap using the proposed MAC, ranking them in descending order. The top k% of layers are then selected for fine-tuning on complete images.
+                    3) The fine-tuning process is further assisted by a pre-trained vision foundation model, providing semantic consistency and degradation-invariant priors."
+            data-zh="整体流程示意图。  
+                    1）首先使用自适应语义感知掩码（AdaSAM）方法对模型进行预训练，该方法专为低层视觉任务设计。我们在像素级别以50%的掩码比例遮盖退化图像中语义和纹理丰富的区域（即高信息区域），并对清晰图像进行重建。  
+                    2）随后进行微调，以弥补在从预训练阶段的掩码输入过渡到推理阶段的完整图像时所产生的输入完整性差距。我们通过提出的 MAC 方法评估各网络层对这一差距的贡献，并按贡献从高到低排序，然后选择前k%的层在完整图像上进行微调。  
+                    3）微调过程还借助于预训练的视觉基础模型DINOv2，从而提供语义一致性和退化不变的先验。
+                    "
+          >
+            An illustration of our overall pipeline. 1) Pre-training the model
+            with the Adaptive Semantic-Aware Mask image method tailored to
+            low-level vision. We mask the degraded images' semantically and
+            texturally rich regions (\ie, high-information regions) at the pixel
+            level with a 50% masking ratio and reconstruct the clean images. 2)
+            Fine-tuning is performed to bridge the input integrity gap that
+            arises when transitioning from masked inputs during pre-training to
+            full images during inference. We assess the contribution of each
+            network layer to addressing this gap using the proposed MAC, ranking
+            them in descending order. The top k% of layers are then selected for
+            fine-tuning on complete images. 3) The fine-tuning process is
+            further assisted by a pre-trained vision foundation model, providing
+            semantic consistency and degradation-invariant priors.
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- Data Coverage 部分 -->
+    <section class="data-coverage-section" id="comparison">
+      <div class="container scroll-target">
+        <div class="section-header">
+          <h2 class="section-title" data-en="Comparison" data-zh="对比">
+            Comparison
+          </h2>
+          <div class="section-divider"></div>
+        </div>
+
+        <!-- Visual Comparison Section -->
+        <div class="visual-comparison-section">
+          <h3
+            class="section-subtitle"
+            data-en="Visual Comparison"
+            data-zh="可视化对比"
+          >
+            Visual Comparison
+          </h3>
+
+          <div class="task-selector-container">
+            <h4
+              class="task-selector-title"
+              data-en="Task Selection:"
+              data-zh="任务选择:"
+            >
+              Task Selection:
+            </h4>
+            <div class="task-button-group">
+              <button
+                class="task-button active"
+                data-task="motion_blur"
+                data-en="Motion Deblurring"
+                data-zh="运动去模糊"
+              >
+                Motion Deblurring
+              </button>
+              <button
+                class="task-button"
+                data-task="blur"
+                data-en="Kernel Deblurring"
+                data-zh="核去模糊"
+              >
+                Kernel Deblurring
+              </button>
+              <button
+                class="task-button"
+                data-task="haze"
+                data-en="Dehazing"
+                data-zh="去雾"
+              >
+                Dehazing
+              </button>
+              <button
+                class="task-button"
+                data-task="JPEG"
+                data-en="JPEG Artifact Removal"
+                data-zh="JPEG伪影去除"
+              >
+                JPEG Artifact Removal
+              </button>
+              <button
+                class="task-button"
+                data-task="lol"
+                data-en="Low-light Enhancement"
+                data-zh="低光增强"
+              >
+                Low-light Enhancement
+              </button>
+              <button
+                class="task-button"
+                data-task="noise"
+                data-en="Denoising"
+                data-zh="去噪"
+              >
+                Denoising
+              </button>
+              <button
+                class="task-button"
+                data-task="OOD_noise"
+                data-en="OOD Denoising"
+                data-zh="分布外去噪"
+              >
+                OOD Denoising
+              </button>
+              <button
+                class="task-button"
+                data-task="rain"
+                data-en="Deraining"
+                data-zh="去雨"
+              >
+                Deraining
+              </button>
+            </div>
+          </div>
+
+          <div class="method-selector left-selector">
+            <button
+              class="method-button active"
+              data-image="1"
+              data-method="LQ"
+            >
+              LQ
+            </button>
+            <button class="method-button" data-image="2" data-method="GT">
+              GT
+            </button>
+            <button class="method-button" data-image="2" data-method="AirNet">
+              AirNet
+            </button>
+            <button
+              class="method-button"
+              data-image="2"
+              data-method="Restormer"
+            >
+              Restormer
+            </button>
+            <button class="method-button" data-image="2" data-method="MPRNet">
+              MPRNet
+            </button>
+            <button class="method-button" data-image="2" data-method="NAFNet">
+              NAFNet
+            </button>
+            <button class="method-button" data-image="2" data-method="SwinIR">
+              SwinIR
+            </button>
+            <button class="method-button" data-image="2" data-method="TAPE">
+              TAPE
+            </button>
+            <button
+              class="method-button"
+              data-image="2"
+              data-method="HOGFormer"
+            >
+              HOGFormer
+            </button>
+            <button class="method-button" data-image="2" data-method="MoCE-IR">
+              MoCE-IR
+            </button>
+            <button class="method-button" data-image="2" data-method="RAM">
+              RAM
+            </button>
+            <button class="method-button" data-image="2" data-method="RAM++">
+              RAM++
+            </button>
+          </div>
+
+          <div class="comparison-container" id="cmp">
+            <!-- 底图：右侧模型（铺满全幅） -->
+            <div class="base-image-container">
+              <img
+                id="image2"
+                src="images/vis/motion_blur/GT.png"
+                alt="Image 2"
+              />
+            </div>
+            <!-- 覆盖图：左侧模型（通过裁剪实现擦窗效果） -->
+            <div class="overlay-image-container" id="image2-container">
+              <img
+                id="image1"
+                src="images/vis/motion_blur/LQ.png"
+                alt="Image 1"
+              />
+            </div>
+            <div class="slider">
+              <div class="slider-button"></div>
+            </div>
+          </div>
+          <div class="method-selector right-selector">
+            <button class="method-button" data-image="1" data-method="LQ">
+              LQ
+            </button>
+            <button
+              class="method-button active"
+              data-image="2"
+              data-method="GT"
+            >
+              GT
+            </button>
+            <button class="method-button" data-image="1" data-method="AirNet">
+              AirNet
+            </button>
+            <button
+              class="method-button"
+              data-image="1"
+              data-method="Restormer"
+            >
+              Restormer
+            </button>
+            <button class="method-button" data-image="1" data-method="MPRNet">
+              MPRNet
+            </button>
+            <button class="method-button" data-image="1" data-method="NAFNet">
+              NAFNet
+            </button>
+            <button class="method-button" data-image="1" data-method="SwinIR">
+              SwinIR
+            </button>
+            <button class="method-button" data-image="1" data-method="TAPE">
+              TAPE
+            </button>
+            <button
+              class="method-button"
+              data-image="1"
+              data-method="HOGFormer"
+            >
+              HOGFormer
+            </button>
+            <button class="method-button" data-image="1" data-method="MoCE-IR">
+              MoCE-IR
+            </button>
+            <button class="method-button" data-image="1" data-method="RAM">
+              RAM
+            </button>
+            <button class="method-button" data-image="1" data-method="RAM++">
+              RAM++
+            </button>
+          </div>
+        </div>
+
+        <h3
+          class="section-subtitle"
+          data-en="Quantitative Comparison"
+          data-zh="定量比较"
+        >
+          Quantitative Comparison
+        </h3>
+        <div class="table-nav">
+          <button
+            class="table-btn active"
+            data-target="table-3tasks"
+            data-en="ID-3-Task"
+            data-zh="分布内-3任务"
+          >
+            ID-3-Task
+          </button>
+
+          <button
+            class="table-btn"
+            data-target="table-7tasks"
+            data-en="ID-7-Task"
+            data-zh="分布内-7任务"
+          >
+            ID-7-Task
+          </button>
+
+          <button
+            class="table-btn"
+            data-target="table-cdd11"
+            data-en="OOD-CDD11"
+            data-zh="分布外-CDD11"
+          >
+            OOD-CDD11
+          </button>
+
+          <button
+            class="table-btn"
+            data-target="table-noise"
+            data-en="OOD-Denoise"
+            data-zh="分布外-去噪"
+          >
+            OOD-Denoise
+          </button>
+
+          <button
+            class="table-btn"
+            data-target="table-uieb"
+            data-en="OOD-UIEB"
+            data-zh="分布外-UIEB"
+          >
+            OOD-UIEB
+          </button>
+        </div>
+        <!-- Quantitative Comparison Table -->
+        <div id="table-3tasks" class="data-table-container active">
+          <h4
+            style="text-align: center; margin-bottom: 1rem"
+            data-en="Quantitative comparison on three challenging image restoration tasks"
+            data-zh="三个具有挑战性的图像复原任务定量对比"
+          >
+            Quantitative comparison on three challenging image restoration tasks
+          </h4>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th rowspan="2" data-en="Method" data-zh="方法">Method</th>
+                  <th rowspan="2" data-en="SOTS (Dehaze)" data-zh="去雾 SOTS">
+                    SOTS
+                  </th>
+                  <th
+                    rowspan="2"
+                    data-en="Rain100L (Derain)"
+                    data-zh="去雨 Rain100L"
+                  >
+                    Rain100L
+                  </th>
+                  <th
+                    colspan="3"
+                    data-en="BSD68 (Denoise)"
+                    data-zh="去噪 BSD68"
+                  >
+                    BSD68
+                  </th>
+                  <th rowspan="2" data-en="Average" data-zh="平均">Average</th>
+                </tr>
+                <tr>
+                  <th>&sigma;=15</th>
+                  <th>&sigma;=25</th>
+                  <th>&sigma;=50</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Restormer</td>
+                  <td>27.78/0.958</td>
+                  <td>33.72/0.865</td>
+                  <td>33.72/0.865</td>
+                  <td>30.67/0.865</td>
+                  <td>27.63/0.792</td>
+                  <td>30.75/0.901</td>
+                </tr>
+                <tr>
+                  <td>MPRNet</td>
+                  <td>28.00/0.958</td>
+                  <td>33.86/0.958</td>
+                  <td>33.27/0.920</td>
+                  <td>30.76/0.871</td>
+                  <td>27.29/0.761</td>
+                  <td>30.63/0.894</td>
+                </tr>
+                <tr>
+                  <td>NAFNet</td>
+                  <td>24.11/0.960</td>
+                  <td>33.64/0.956</td>
+                  <td>33.18/0.918</td>
+                  <td>30.47/0.865</td>
+                  <td>27.12/0.754</td>
+                  <td>29.67/0.844</td>
+                </tr>
+                <tr>
+                  <td>DL</td>
+                  <td>26.92/0.931</td>
+                  <td>32.62/0.931</td>
+                  <td>33.05/0.914</td>
+                  <td>30.41/0.861</td>
+                  <td>26.90/0.740</td>
+                  <td>29.98/0.875</td>
+                </tr>
+                <tr>
+                  <td>AirNet</td>
+                  <td>27.94/0.962</td>
+                  <td>34.90/0.967</td>
+                  <td>33.92/<span class="second">0.933</span></td>
+                  <td>31.26/0.888</td>
+                  <td>28.00/0.797</td>
+                  <td>31.20/0.910</td>
+                </tr>
+                <tr>
+                  <td>PromptIR</td>
+                  <td>30.58/0.974</td>
+                  <td>36.37/0.972</td>
+                  <td>33.98/<span class="second">0.933</span></td>
+                  <td>31.31/0.888</td>
+                  <td>28.06/0.799</td>
+                  <td>32.06/0.913</td>
+                </tr>
+                <tr>
+                  <td>InstructIR-3D</td>
+                  <td>30.22/0.959</td>
+                  <td>37.98/0.978</td>
+                  <td>
+                    <span class="second">34.15</span>/<span class="second"
+                      >0.933</span
+                    >
+                  </td>
+                  <td>
+                    <span class="second">31.52</span>/<span class="second"
+                      >0.890</span
+                    >
+                  </td>
+                  <td>
+                    <span class="best">28.30</span>/<span class="best"
+                      >0.804</span
+                    >
+                  </td>
+                  <td>32.43/0.913</td>
+                </tr>
+                <tr>
+                  <td>Art<sub>AirNet</sub></td>
+                  <td>30.56/0.977</td>
+                  <td>37.74/0.981</td>
+                  <td>34.02/<span class="best">0.934</span></td>
+                  <td>31.37/<span class="second">0.890</span></td>
+                  <td>28.12/<span class="second">0.802</span></td>
+                  <td>32.36/<span class="second">0.917</span></td>
+                </tr>
+                <tr>
+                  <td>Art<sub>PromptIR</sub></td>
+                  <td>30.83/<span class="second">0.979</span></td>
+                  <td>37.94/0.982</td>
+                  <td>34.06/<span class="best">0.934</span></td>
+                  <td>31.42/<span class="best">0.891</span></td>
+                  <td>28.14/0.801</td>
+                  <td>32.49/<span class="second">0.917</span></td>
+                </tr>
+                <tr>
+                  <td>GridFormer</td>
+                  <td>30.37/0.970</td>
+                  <td>37.15/0.972</td>
+                  <td>33.93/0.931</td>
+                  <td>31.37/0.887</td>
+                  <td>28.11/0.801</td>
+                  <td>32.19/0.912</td>
+                </tr>
+                <tr>
+                  <td>RAM<sub>Restormer</sub></td>
+                  <td>30.26/0.975</td>
+                  <td>37.89/0.982</td>
+                  <td><span class="second">34.15</span>/0.932</td>
+                  <td>31.51/0.888</td>
+                  <td>28.24/0.800</td>
+                  <td>32.41/0.915</td>
+                </tr>
+                <tr>
+                  <td>MoCE-IR</td>
+                  <td>
+                    <span class="second">31.12</span>/<span class="second"
+                      >0.979</span
+                    >
+                  </td>
+                  <td>
+                    <span class="second">38.72</span>/<span class="second"
+                      >0.984</span
+                    >
+                  </td>
+                  <td>34.13/0.932</td>
+                  <td>31.47/0.888</td>
+                  <td>28.20/0.800</td>
+                  <td>
+                    <span class="second">32.73</span>/<span class="second"
+                      >0.917</span
+                    >
+                  </td>
+                </tr>
+                <tr class="our-method-row">
+                  <td>RAM++<sub>30%</sub>(ours)</td>
+                  <td>31.10/0.978</td>
+                  <td>37.78/0.981</td>
+                  <td>34.09/0.932</td>
+                  <td>31.49/0.889</td>
+                  <td>28.25/0.801</td>
+                  <td>32.54/0.916</td>
+                </tr>
+                <tr class="our-method-row">
+                  <td>RAM++<sub>100%</sub>(ours)</td>
+                  <td>
+                    <span class="best">31.90</span>/<span class="best"
+                      >0.980</span
+                    >
+                  </td>
+                  <td>
+                    <span class="best">38.87</span>/<span class="best"
+                      >0.985</span
+                    >
+                  </td>
+                  <td>
+                    <span class="best">34.18</span>/<span class="second"
+                      >0.933</span
+                    >
+                  </td>
+                  <td><span class="best">31.55</span>/0.889</td>
+                  <td>
+                    <span class="second">28.29</span>/<span class="second"
+                      >0.802</span
+                    >
+                  </td>
+                  <td>
+                    <span class="best">32.96</span>/<span class="best"
+                      >0.918</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            class="table-caption"
+            style="text-align: center; margin-top: 0.5rem"
+          >
+            <p
+              data-en="Blue indicates the best results, Teal indicates the second-best."
+              data-zh="蓝色表示最佳结果，青色表示次优结果。"
+            >
+              Blue indicates the best results, Teal indicates the second-best,
+            </p>
+          </div>
+        </div>
+        <div id="table-7tasks" class="data-table-container">
+          <h4
+            style="text-align: center; margin-bottom: 1rem"
+            data-en="Quantitative comparison on seven challenging image restoration tasks"
+            data-zh="七个具有挑战性的图像复原任务上的定量对比"
+          >
+            Quantitative comparison on seven challenging image restoration tasks
+          </h4>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th rowspan="2" data-en="Method" data-zh="方法">Method</th>
+                  <th data-en="SOTS (Dehaze)" data-zh="去雾 SOTS">SOTS</th>
+                  <th
+                    data-en="Rain13k-Test (Derain)"
+                    data-zh="去雨 Rain13k-Test"
+                  >
+                    Rain13k-Test
+                  </th>
+                  <th data-en="BSD68 (Denoise)" data-zh="去噪 BSD68">BSD68</th>
+                  <th
+                    data-en="GoPro (Motion Deblur)"
+                    data-zh="运动去模糊 GoPro"
+                  >
+                    GoPro
+                  </th>
+                  <th data-en="LOL (LLIE)" data-zh="低光增强 LOL">LOL</th>
+                  <th
+                    data-en="LSDIR-Blur (Kernel Deblur)"
+                    data-zh="核去模糊 Blur"
+                  >
+                    LSDIR-Blur
+                  </th>
+                  <th
+                    data-en="LSDIR-JPEG (JPEG Artifact Removal)"
+                    data-zh="压缩伪影去除 JPEG"
+                  >
+                    LSDIR-JPEG
+                  </th>
+                  <th data-en="Average" data-zh="平均">Average</th>
+                </tr>
+
+                <tr>
+                  <th>PSNR/SSIM</th>
+                  <th>PSNR/SSIM</th>
+                  <th>PSNR/SSIM</th>
+                  <th>PSNR/SSIM</th>
+                  <th>PSNR/SSIM</th>
+                  <th>PSNR/SSIM</th>
+                  <th>PSNR/SSIM</th>
+                  <th>PSNR/SSIM</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Restormer</td>
+                  <td>22.89/0.9172</td>
+                  <td>27.05/0.8469</td>
+                  <td>
+                    <span class="best">30.95</span>/<span class="best"
+                      >0.8657</span
+                    >
+                  </td>
+                  <td>27.46/0.8497</td>
+                  <td>23.65/0.8458</td>
+                  <td>19.60/0.3658</td>
+                  <td>
+                    <span class="best">30.46</span>/<span class="best"
+                      >0.9141</span
+                    >
+                  </td>
+                  <td>26.01/0.8007</td>
+                </tr>
+                <tr>
+                  <td>MPRNet</td>
+                  <td>25.23/0.9463</td>
+                  <td>25.36/0.8068</td>
+                  <td>29.83/0.8317</td>
+                  <td>25.90/0.7949</td>
+                  <td>22.29/0.8170</td>
+                  <td>25.68/0.8281</td>
+                  <td>28.96/0.8865</td>
+                  <td>26.18/0.8445</td>
+                </tr>
+                <tr>
+                  <td>NAFNet</td>
+                  <td>25.74/0.9445</td>
+                  <td>24.65/0.7877</td>
+                  <td>30.37/0.8540</td>
+                  <td>25.53/0.7909</td>
+                  <td>21.50/0.8104</td>
+                  <td>29.08/0.9130</td>
+                  <td>29.09/0.8955</td>
+                  <td>26.57/0.8566</td>
+                </tr>
+                <tr>
+                  <td>DL</td>
+                  <td>21.16/0.9042</td>
+                  <td>19.56/0.6508</td>
+                  <td>16.15/0.5861</td>
+                  <td>17.63/0.5862</td>
+                  <td>19.26/0.7777</td>
+                  <td>17.98/0.6121</td>
+                  <td>19.55/0.6965</td>
+                  <td>18.75/0.6877</td>
+                </tr>
+                <tr>
+                  <td>TAPE</td>
+                  <td>25.14/0.9319</td>
+                  <td>23.66/0.7818</td>
+                  <td>30.11/0.8354</td>
+                  <td>25.97/0.7962</td>
+                  <td>18.95/0.7632</td>
+                  <td>24.26/0.7654</td>
+                  <td>29.28/0.8965</td>
+                  <td>25.34/0.8243</td>
+                </tr>
+                <tr>
+                  <td>AirNet</td>
+                  <td>21.66/0.8366</td>
+                  <td>20.21/0.6402</td>
+                  <td>27.99/0.7250</td>
+                  <td>23.36/0.7503</td>
+                  <td>16.65/0.6708</td>
+                  <td>23.84/0.7358</td>
+                  <td>24.36/0.8020</td>
+                  <td>22.58/0.7372</td>
+                </tr>
+                <tr>
+                  <td>SwinIR</td>
+                  <td>27.29/0.9622</td>
+                  <td>25.32/0.8258</td>
+                  <td>30.65/0.8540</td>
+                  <td>26.61/0.8125</td>
+                  <td>18.66/0.8048</td>
+                  <td>27.82/0.8839</td>
+                  <td>30.13/0.9071</td>
+                  <td>26.64/0.8643</td>
+                </tr>
+                <tr>
+                  <td>PromptIR</td>
+                  <td>28.70/0.9659</td>
+                  <td>27.46/0.8585</td>
+                  <td>30.84/0.8625</td>
+                  <td>27.71/0.8565</td>
+                  <td>21.19/0.8356</td>
+                  <td>
+                    <span class="second">31.01</span>/<span class="second"
+                      >0.9385</span
+                    >
+                  </td>
+                  <td>30.30/0.9117</td>
+                  <td>28.17/0.8899</td>
+                </tr>
+                <tr>
+                  <td>MoCE-IR</td>
+                  <td>30.16/0.9719</td>
+                  <td>27.86/0.8608</td>
+                  <td>30.57/0.8556</td>
+                  <td>27.70/0.8506</td>
+                  <td>24.00/0.8446</td>
+                  <td>27.96/0.8837</td>
+                  <td>29.88/0.9049</td>
+                  <td>28.30/0.8817</td>
+                </tr>
+                <tr>
+                  <td>HOGFormer</td>
+                  <td>29.21/0.9685</td>
+                  <td>27.09/0.8415</td>
+                  <td>30.61/0.8551</td>
+                  <td>27.64/0.8477</td>
+                  <td>21.38/0.8273</td>
+                  <td>
+                    <span class="best">32.02</span>/<span class="best"
+                      >0.9480</span
+                    >
+                  </td>
+                  <td>30.20/0.9092</td>
+                  <td>28.31/0.8853</td>
+                </tr>
+                <tr>
+                  <td>RAM<sub>SwinIR</sub></td>
+                  <td>28.47/0.9689</td>
+                  <td>26.31/0.8486</td>
+                  <td>30.83/0.8611</td>
+                  <td>26.89/0.8200</td>
+                  <td>21.62/0.8291</td>
+                  <td>26.66/0.8514</td>
+                  <td>30.22/0.9096</td>
+                  <td>27.28/0.8698</td>
+                </tr>
+                <tr>
+                  <td>RAM<sub>PromptIR</sub></td>
+                  <td>29.64/0.9695</td>
+                  <td>28.47/0.8751</td>
+                  <td>30.86/0.8624</td>
+                  <td>
+                    <span class="second">28.02</span>/<span class="second"
+                      >0.8592</span
+                    >
+                  </td>
+                  <td>24.46/0.8581</td>
+                  <td>29.57/0.9179</td>
+                  <td>30.33/0.9119</td>
+                  <td>28.76/<span class="second">0.8935</span></td>
+                </tr>
+                <tr>
+                  <td>RAM<sub>Restormer</sub></td>
+                  <td>29.97/0.9721</td>
+                  <td>27.97/0.8666</td>
+                  <td><span class="second">30.88</span>/0.8631</td>
+                  <td>27.83/0.8582</td>
+                  <td>24.15/<span class="second">0.8613</span></td>
+                  <td>29.50/0.9153</td>
+                  <td>30.37/0.9127</td>
+                  <td>28.67/0.8928</td>
+                </tr>
+                <tr class="our-method-row">
+                  <td><b>RAM++<sub>30%</sub>(ours)</b></td>
+                  <td>
+                    <span class="second">31.67</span>/<span class="second"
+                      >0.9760</span
+                    >
+                  </td>
+                  <td>
+                    <span class="second">28.52</span>/<span class="second"
+                      >0.8782</span
+                    >
+                  </td>
+                  <td>30.82/<span class="second">0.8654</span></td>
+                  <td>27.61/0.8489</td>
+                  <td><span class="second">24.86</span>/0.8545</td>
+                  <td>28.45/0.8926</td>
+                  <td>30.19/0.9107</td>
+                  <td><span class="second">28.88</span>/0.8895</td>
+                </tr>
+                <tr class="our-method-row">
+                  <td class="our-method-row">
+                    <b>RAM++<sub>100%</sub>(ours)</b>
+                  </td>
+                  <td>
+                    <span class="best">31.91</span>/<span class="best"
+                      >0.9782</span
+                    >
+                  </td>
+                  <td>
+                    <span class="best">29.53</span>/<span class="best"
+                      >0.8919</span
+                    >
+                  </td>
+                  <td><span class="best">30.95</span>/0.8652</td>
+                  <td>
+                    <span class="best">28.19</span>/<span class="best"
+                      >0.8621</span
+                    >
+                  </td>
+                  <td>
+                    <span class="best">25.23</span>/<span class="best"
+                      >0.8619</span
+                    >
+                  </td>
+                  <td>29.96/0.9219</td>
+                  <td>
+                    <span class="second">30.43</span>/<span class="second"
+                      >0.9139</span
+                    >
+                  </td>
+                  <td>
+                    <span class="best">29.46</span>/<span class="best"
+                      >0.8993</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            class="table-caption"
+            style="text-align: center; margin-top: 0.5rem"
+          >
+            <p
+              data-en="Blue indicates the best results, Teal indicates the second-best."
+              data-zh="蓝色表示最佳结果，青色表示次优结果。"
+            >
+              Blue indicates the best results, Teal indicates the second-best,
+            </p>
+          </div>
+        </div>
+
+        <div id="table-cdd11" class="data-table-container">
+          <h4
+            style="text-align: center; margin-bottom: 1rem"
+            data-en="Quantitative comparison of PSNR for models trained under Setting 2 (7-task) on the CDD-11 dataset"
+            data-zh="在 CDD-11 数据集上，Setting 2 (7 任务) 下训练模型的 PSNR 定量对比"
+          >
+            Quantitative comparison of PSNR for models trained under Setting 2
+            (7-task) on the CDD-11 dataset
+          </h4>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th rowspan="2" data-en="Method" data-zh="方法">Method</th>
+                  <th colspan="4" data-en="CDD11-Single" data-zh="CDD11-单任务">
+                    CDD11-Single
+                  </th>
+                  <th colspan="5" data-en="CDD11-Double" data-zh="CDD11-双任务">
+                    CDD11-Double
+                  </th>
+                  <th colspan="2" data-en="CDD11-Triple" data-zh="CDD11-三任务">
+                    CDD11-Triple
+                  </th>
+                  <th rowspan="2" data-en="Average" data-zh="平均">Average</th>
+                </tr>
+                <tr>
+                  <th data-en="Low (L)" data-zh="低光 (L)">Low (L)</th>
+                  <th data-en="Haze (H)" data-zh="雾霾 (H)">Haze (H)</th>
+                  <th data-en="Rain (R)" data-zh="雨 (R)">Rain (R)</th>
+                  <th
+                    data-en="<span class='ood'>Snow (S)</span>"
+                    data-zh="<span class='ood'>雪 (S)</span>"
+                  >
+                    <span class="ood">Snow (S)</span>
+                  </th>
+                  <th data-en="L+H" data-zh="L+H">L+H</th>
+                  <th data-en="L+R" data-zh="L+R">L+R</th>
+                  <th
+                    data-en="L+<span class='ood'>S</span>"
+                    data-zh="L+<span class='ood'>S</span>"
+                  >
+                    L+<span class="ood">S</span>
+                  </th>
+                  <th data-en="H+R" data-zh="H+R">H+R</th>
+                  <th
+                    data-en="H+<span class='ood'>S</span>"
+                    data-zh="H+<span class='ood'>S</span>"
+                  >
+                    H+<span class="ood">S</span>
+                  </th>
+                  <th data-en="L+H+R" data-zh="L+H+R">L+H+R</th>
+                  <th
+                    data-en="L+H+<span class='ood'>S</span>"
+                    data-zh="L+H+<span class='ood'>S</span>"
+                  >
+                    L+H+<span class="ood">S</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>AirNet</td>
+                  <td>12.04</td>
+                  <td>16.84</td>
+                  <td>22.35</td>
+                  <td>22.64</td>
+                  <td>14.93</td>
+                  <td>14.77</td>
+                  <td>13.56</td>
+                  <td>15.41</td>
+                  <td>15.44</td>
+                  <td>15.30</td>
+                  <td>14.65</td>
+                  <td>16.17</td>
+                </tr>
+                <tr>
+                  <td>Restormer</td>
+                  <td>12.15</td>
+                  <td>16.17</td>
+                  <td>25.06</td>
+                  <td>23.66</td>
+                  <td>15.01</td>
+                  <td>14.92</td>
+                  <td>13.68</td>
+                  <td>15.33</td>
+                  <td>14.93</td>
+                  <td>15.33</td>
+                  <td>14.67</td>
+                  <td>16.45</td>
+                </tr>
+                <tr>
+                  <td>SwinIR</td>
+                  <td><span class="second">12.24</span></td>
+                  <td>16.97</td>
+                  <td>22.19</td>
+                  <td>23.44</td>
+                  <td><span class="second">15.05</span></td>
+                  <td><span class="best">15.00</span></td>
+                  <td><span class="best">13.76</span></td>
+                  <td>16.25</td>
+                  <td>15.69</td>
+                  <td>15.36</td>
+                  <td><span class="second">14.70</span></td>
+                  <td>16.42</td>
+                </tr>
+                <tr>
+                  <td>PromptIR</td>
+                  <td>12.14</td>
+                  <td>16.53</td>
+                  <td>26.27</td>
+                  <td>23.65</td>
+                  <td>15.00</td>
+                  <td>14.64</td>
+                  <td>13.68</td>
+                  <td>16.09</td>
+                  <td>15.17</td>
+                  <td>15.38</td>
+                  <td>14.68</td>
+                  <td>16.66</td>
+                </tr>
+                <tr>
+                  <td>HOGFormer</td>
+                  <td>12.12</td>
+                  <td>15.71</td>
+                  <td>22.92</td>
+                  <td>22.18</td>
+                  <td>14.94</td>
+                  <td>14.91</td>
+                  <td>13.69</td>
+                  <td>16.87</td>
+                  <td>14.69</td>
+                  <td>15.36</td>
+                  <td>14.65</td>
+                  <td>16.19</td>
+                </tr>
+                <tr>
+                  <td>MoCE-IR</td>
+                  <td>12.14</td>
+                  <td>15.70</td>
+                  <td>24.92</td>
+                  <td>20.22</td>
+                  <td>14.99</td>
+                  <td><span class="second">14.94</span></td>
+                  <td><span class="best">13.76</span></td>
+                  <td>15.32</td>
+                  <td>13.60</td>
+                  <td>15.36</td>
+                  <td>14.58</td>
+                  <td>15.96</td>
+                </tr>
+                <tr>
+                  <td>RAM<sub>PromptIR</sub></td>
+                  <td>12.13</td>
+                  <td>17.03</td>
+                  <td><span class="best">28.21</span></td>
+                  <td><span class="best">23.76</span></td>
+                  <td>14.97</td>
+                  <td>14.46</td>
+                  <td>13.68</td>
+                  <td>16.11</td>
+                  <td>15.49</td>
+                  <td>15.35</td>
+                  <td>14.65</td>
+                  <td>16.90</td>
+                </tr>
+                <tr>
+                  <td>RAM<sub>Restormer</sub></td>
+                  <td>12.15</td>
+                  <td><span class="second">18.11</span></td>
+                  <td>26.82</td>
+                  <td><span class="second">23.73</span></td>
+                  <td>14.98</td>
+                  <td>14.67</td>
+                  <td>13.69</td>
+                  <td><span class="second">17.11</span></td>
+                  <td><span class="second">16.05</span></td>
+                  <td><span class="best">15.41</span></td>
+                  <td>14.65</td>
+                  <td><span class="second">17.03</span></td>
+                </tr>
+                <tr class="our-method-row">
+                  <td class="our-method-row">
+                    <b>RAM++<sub>100%</sub>(ours)</b>
+                  </td>
+                  <td><span class="best">12.26</span></td>
+                  <td><span class="best">19.07</span></td>
+                  <td><span class="second">27.37</span></td>
+                  <td>22.78</td>
+                  <td><span class="best">15.11</span></td>
+                  <td>14.88</td>
+                  <td><span class="second">13.71</span></td>
+                  <td><span class="best">17.19</span></td>
+                  <td><span class="best">16.68</span></td>
+                  <td><span class="second">15.40</span></td>
+                  <td><span class="best">14.71</span></td>
+                  <td><span class="best">17.20</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            class="table-caption"
+            style="text-align: center; margin-top: 0.5rem"
+          >
+            <p
+              data-en="Blue indicates the best results, Teal indicates the second-best, Red indicates OOD degradation types."
+              data-zh="蓝色表示最佳结果，青色表示次优结果，红色表示 OOD 退化类型。"
+            >
+              Blue indicates the best results, Teal indicates the second-best,
+              Red indicates OOD degradation types.
+            </p>
+          </div>
+        </div>
+        <div id="table-noise" class="data-table-container">
+          <h4
+            style="text-align: center; margin-bottom: 1rem"
+            data-en="Quantitative PSNR comparison across multiple noise datasets for models trained under Setting 2 (7 tasks)"
+            data-zh="在多种噪声数据集上，Setting 2（7 任务）下训练模型的 PSNR 定量对比"
+          >
+            Quantitative PSNR comparison across multiple noise datasets for
+            models trained under Setting 2 (7 tasks)
+          </h4>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th rowspan="3" data-en="Method" data-zh="方法">Method</th>
+                  <th colspan="8" data-en="In-Distribution" data-zh="分布内">
+                    In-Distribution
+                  </th>
+                  <th
+                    colspan="4"
+                    data-en="Out-of-Distribution"
+                    data-zh="分布外"
+                  >
+                    Out-of-Distribution
+                  </th>
+                </tr>
+                <tr>
+                  <th colspan="4" data-en="BSD68" data-zh="BSD68">BSD68</th>
+                  <th colspan="4" data-en="Urban100" data-zh="Urban100">
+                    Urban100
+                  </th>
+                  <th colspan="4" data-en="Urban100" data-zh="Urban100">
+                    Urban100
+                  </th>
+                </tr>
+                <tr>
+                  <th data-en="σ=15" data-zh="σ=15">σ=15</th>
+                  <th data-en="σ=25" data-zh="σ=25">σ=25</th>
+                  <th data-en="σ=50" data-zh="σ=50">σ=50</th>
+                  <th data-en="Average" data-zh="平均">Avg</th>
+
+                  <th data-en="σ=15" data-zh="σ=15">σ=15</th>
+                  <th data-en="σ=25" data-zh="σ=25">σ=25</th>
+                  <th data-en="σ=50" data-zh="σ=50">σ=50</th>
+                  <th data-en="Average" data-zh="平均">Avg</th>
+
+                  <th
+                    data-en="<span class='ood'>Poisson</span>"
+                    data-zh="<span class='ood'>泊松噪声</span>"
+                  >
+                    <span class="ood">Poisson</span>
+                  </th>
+                  <th
+                    data-en="<span class='ood'>Pepper</span>"
+                    data-zh="<span class='ood'>椒盐噪声</span>"
+                  >
+                    <span class="ood">Pepper</span>
+                  </th>
+                  <th
+                    data-en="<span class='ood'>Speckle</span>"
+                    data-zh="<span class='ood'>斑点噪声</span>"
+                  >
+                    <span class="ood">Speckle</span>
+                  </th>
+                  <th data-en="Average" data-zh="平均">Avg</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>NAFNet</td>
+                  <td>33.22</td>
+                  <td>30.59</td>
+                  <td>27.30</td>
+                  <td>30.37</td>
+                  <td>32.67</td>
+                  <td>30.21</td>
+                  <td>26.97</td>
+                  <td>29.92</td>
+                  <td><span class="second">13.00</span></td>
+                  <td>25.70</td>
+                  <td>18.33</td>
+                  <td><span class="second">19.01</span></td>
+                </tr>
+                <tr>
+                  <td>MPRNet</td>
+                  <td>32.73</td>
+                  <td>30.11</td>
+                  <td>26.65</td>
+                  <td>29.83</td>
+                  <td>32.06</td>
+                  <td>29.46</td>
+                  <td>25.77</td>
+                  <td>29.10</td>
+                  <td>9.90</td>
+                  <td><span class="best">26.46</span></td>
+                  <td>17.21</td>
+                  <td>17.86</td>
+                </tr>
+                <tr>
+                  <td>Restormer</td>
+                  <td><span class="best">33.79</span></td>
+                  <td><span class="second">31.17</span></td>
+                  <td><span class="best">27.90</span></td>
+                  <td><span class="best">30.95</span></td>
+                  <td><span class="best">33.83</span></td>
+                  <td><span class="second">31.40</span></td>
+                  <td><span class="second">27.99</span></td>
+                  <td><span class="second">31.07</span></td>
+                  <td>10.92</td>
+                  <td>24.87</td>
+                  <td>16.96</td>
+                  <td>17.59</td>
+                </tr>
+                <tr>
+                  <td>TAPE</td>
+                  <td>33.10</td>
+                  <td>30.37</td>
+                  <td>26.86</td>
+                  <td>30.11</td>
+                  <td>32.59</td>
+                  <td>29.93</td>
+                  <td>26.19</td>
+                  <td>29.57</td>
+                  <td>9.99</td>
+                  <td>23.24</td>
+                  <td>16.61</td>
+                  <td>16.61</td>
+                </tr>
+                <tr>
+                  <td>AirNet</td>
+                  <td>31.63</td>
+                  <td>28.83</td>
+                  <td>23.52</td>
+                  <td>27.99</td>
+                  <td>29.79</td>
+                  <td>26.90</td>
+                  <td>21.35</td>
+                  <td>26.01</td>
+                  <td>4.80</td>
+                  <td>20.78</td>
+                  <td>5.32</td>
+                  <td>10.30</td>
+                </tr>
+                <tr>
+                  <td>SwinIR</td>
+                  <td>33.53</td>
+                  <td>30.89</td>
+                  <td>27.54</td>
+                  <td>30.65</td>
+                  <td>33.50</td>
+                  <td>30.99</td>
+                  <td>27.37</td>
+                  <td>30.62</td>
+                  <td>12.81</td>
+                  <td>10.60</td>
+                  <td><span class="best">20.09</span></td>
+                  <td>14.50</td>
+                </tr>
+                <tr>
+                  <td>MoCE-IR</td>
+                  <td>33.43</td>
+                  <td>30.80</td>
+                  <td>27.49</td>
+                  <td>30.57</td>
+                  <td>33.06</td>
+                  <td>30.52</td>
+                  <td>26.95</td>
+                  <td>30.18</td>
+                  <td>11.48</td>
+                  <td>24.87</td>
+                  <td>16.86</td>
+                  <td>17.74</td>
+                </tr>
+                <tr>
+                  <td>HOGFormer</td>
+                  <td>33.53</td>
+                  <td>30.85</td>
+                  <td>27.45</td>
+                  <td>30.61</td>
+                  <td>33.44</td>
+                  <td>30.90</td>
+                  <td>27.33</td>
+                  <td>30.56</td>
+                  <td>11.09</td>
+                  <td>23.98</td>
+                  <td>16.10</td>
+                  <td>17.06</td>
+                </tr>
+                <tr>
+                  <td>RAM<sub>PromptIR</sub></td>
+                  <td>33.70</td>
+                  <td>31.08</td>
+                  <td>27.79</td>
+                  <td>30.86</td>
+                  <td>33.70</td>
+                  <td>31.30</td>
+                  <td>27.92</td>
+                  <td>30.97</td>
+                  <td>11.26</td>
+                  <td>25.23</td>
+                  <td>16.94</td>
+                  <td>17.81</td>
+                </tr>
+                <tr>
+                  <td>RAM<sub>Restormer</sub></td>
+                  <td>33.73</td>
+                  <td>31.11</td>
+                  <td><span class="second">27.81</span></td>
+                  <td><span class="second">30.88</span></td>
+                  <td>33.76</td>
+                  <td>31.36</td>
+                  <td>27.98</td>
+                  <td>31.03</td>
+                  <td>9.80</td>
+                  <td>22.31</td>
+                  <td>15.13</td>
+                  <td>15.75</td>
+                </tr>
+                <tr class="our-method-row">
+                  <td class="our-method-row">
+                    <b>RAM++<sub>100%</sub>(ours)</b>
+                  </td>
+                  <td><span class="second">33.77</span></td>
+                  <td><span class="best">31.18</span></td>
+                  <td><span class="best">27.90</span></td>
+                  <td><span class="best">30.95</span></td>
+                  <td><span class="second">33.79</span></td>
+                  <td><span class="best">31.41</span></td>
+                  <td><span class="best">28.09</span></td>
+                  <td><span class="best">31.10</span></td>
+                  <td><span class="best">13.05</span></td>
+                  <td><span class="second">26.10</span></td>
+                  <td><span class="second">19.13</span></td>
+                  <td><span class="best">19.43</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            class="table-caption"
+            style="text-align: center; margin-top: 0.5rem"
+          >
+            <p
+              data-en="Blue indicates the best results, Teal indicates the second-best, Red indicates OOD degradation types."
+              data-zh="蓝色表示最佳结果，青色表示次优结果，红色表示 OOD 退化类型。"
+            >
+              Blue indicates the best results, Teal indicates the second-best,
+              Red indicates OOD degradation types.
+            </p>
+          </div>
+        </div>
+        <!-- UIEB Generalization Performance Table -->
+        <div id="table-uieb" class="data-table-container">
+          <h4
+            style="text-align: center; margin-bottom: 1rem"
+            data-en="Quantitative PSNR comparison on the UIEB dataset for models trained under a 5-task setting"
+            data-zh="在 UIEB 数据集上，5 任务设置下训练模型的 PSNR 定量对比"
+          >
+            Quantitative PSNR comparison on the UIEB dataset for models trained
+            under a 5-task setting
+          </h4>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th rowspan="2" data-en="Method" data-zh="方法">Method</th>
+                  <th colspan="6" data-en="In-Distribution" data-zh="分布内">
+                    In-Distribution
+                  </th>
+                  <th data-en="Out-of-Distribution" data-zh="分布外">
+                    Out-of-Distribution
+                  </th>
+                </tr>
+                <tr>
+                  <th data-en="SOTS (Dehaze)" data-zh="去雾 SOTS">SOTS</th>
+                  <th data-en="Rain100L (Derain)" data-zh="去雨 Rain100L">
+                    Rain100L
+                  </th>
+                  <th data-en="BSD68 (Denoise)" data-zh="去噪 BSD68">BSD68</th>
+                  <th
+                    data-en="GoPro (Motion Deblur)"
+                    data-zh="运动去模糊 GoPro"
+                  >
+                    GoPro
+                  </th>
+                  <th data-en="LOL (LLIE)" data-zh="低光增强 LOL">LOL</th>
+                  <th data-en="Average" data-zh="平均">Average</th>
+                  <th
+                    data-en="<span class='ood'>UIEB</span>"
+                    data-zh="<span class='ood'>水下图像增强</span>"
+                  >
+                    <span class="ood">UIEB</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>AirNet</td>
+                  <td>21.04/0.884</td>
+                  <td>32.98/0.951</td>
+                  <td>30.91/0.882</td>
+                  <td>24.35/0.781</td>
+                  <td>18.18/0.735</td>
+                  <td>25.49/0.846</td>
+                  <td>15.46/0.745</td>
+                </tr>
+                <tr>
+                  <td>SwinIR</td>
+                  <td>21.50/0.891</td>
+                  <td>30.78/0.923</td>
+                  <td>30.59/0.868</td>
+                  <td>24.52/0.773</td>
+                  <td>17.81/0.723</td>
+                  <td>25.04/0.835</td>
+                  <td>15.31/0.740</td>
+                </tr>
+                <tr>
+                  <td>NAFNet</td>
+                  <td>25.23/0.939</td>
+                  <td>35.56/0.967</td>
+                  <td>31.02/0.883</td>
+                  <td>26.53/0.808</td>
+                  <td>20.49/0.809</td>
+                  <td>27.76/0.881</td>
+                  <td>15.42/0.744</td>
+                </tr>
+                <tr>
+                  <td>Restormer</td>
+                  <td>24.09/0.927</td>
+                  <td>34.81/0.962</td>
+                  <td><span class="best">31.49</span>/0.884</td>
+                  <td>27.22/0.829</td>
+                  <td>20.41/0.806</td>
+                  <td>27.60/0.881</td>
+                  <td>15.46/0.745</td>
+                </tr>
+                <tr>
+                  <td>PromptIR</td>
+                  <td>25.20/0.931</td>
+                  <td>35.94/0.964</td>
+                  <td>31.17/0.882</td>
+                  <td>27.32/0.842</td>
+                  <td>20.94/0.799</td>
+                  <td>28.11/0.883</td>
+                  <td>15.48/0.748</td>
+                </tr>
+                <tr>
+                  <td>DCPT<sub>PromptIR</sub></td>
+                  <td>
+                    <span class="second">30.72</span>/<span class="second"
+                      >0.977</span
+                    >
+                  </td>
+                  <td>37.32/<span class="second">0.978</span></td>
+                  <td>31.32/0.885</td>
+                  <td>
+                    <span class="best">28.84</span>/<span class="best"
+                      >0.877</span
+                    >
+                  </td>
+                  <td><span class="best">23.35</span>/0.840</td>
+                  <td><span class="second">30.31</span>/0.911</td>
+                  <td>15.78/<span class="second">0.772</span></td>
+                </tr>
+                <tr>
+                  <td>RAM<sub>Restormer</sub></td>
+                  <td>30.22/0.976</td>
+                  <td>
+                    <span class="second">38.21</span>/<span class="best"
+                      >0.983</span
+                    >
+                  </td>
+                  <td>31.41/<span class="second">0.886</span></td>
+                  <td>28.36/0.866</td>
+                  <td>22.66/<span class="second">0.850</span></td>
+                  <td>30.17/<span class="second">0.912</span></td>
+                  <td>
+                    <span class="second">17.37</span>/<span class="best"
+                      >0.780</span
+                    >
+                  </td>
+                </tr>
+                <tr class="our-method-row">
+                  <td class="our-method-row">
+                    <b>RAM++<sub>100%</sub>(ours)</b>
+                  </td>
+                  <td>
+                    <span class="best">31.34</span>/<span class="best"
+                      >0.979</span
+                    >
+                  </td>
+                  <td>
+                    <span class="best">38.29</span>/<span class="best"
+                      >0.983</span
+                    >
+                  </td>
+                  <td>
+                    <span class="second">31.48</span>/<span class="best"
+                      >0.887</span
+                    >
+                  </td>
+                  <td>
+                    <span class="second">28.37</span>/<span class="second"
+                      >0.867</span
+                    >
+                  </td>
+                  <td>
+                    <span class="second">22.67</span>/<span class="best"
+                      >0.852</span
+                    >
+                  </td>
+                  <td>
+                    <span class="best">30.43</span>/<span class="best"
+                      >0.914</span
+                    >
+                  </td>
+                  <td>
+                    <span class="best">17.44</span>/<span class="best"
+                      >0.780</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            class="table-caption"
+            style="text-align: center; margin-top: 0.5rem"
+          >
+            <p
+              data-en="Blue indicates the best results, Teal indicates the second-best, Red indicates OOD degradation type."
+              data-zh="蓝色表示最佳结果，青色表示次优结果，红色表示 OOD 退化类型。"
+            >
+              Blue indicates the best results, Teal indicates the second-best,
+              Red indicates OOD degradation types.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact部分 -->
+    <section class="contact-section" id="contact">
+      <div class="container scroll-target">
+        <div class="section-header">
+          <h2 class="section-title" data-en="Contact" data-zh="联系我们">
+            Contact
+          </h2>
+          <div class="section-divider"></div>
+        </div>
+        <div class="contact-content">
+          <p
+            class="contact-text"
+            style="font-size: 1.5rem"
+            data-en="Feel free to contact us at:"
+            data-zh="欢迎联系我们："
+          >
+            Feel free to contact us at:
+          </p>
+          <p class="contact-text" style="font-size: 1.5rem">
+            zilongzhang831@gmail.com
+          </p>
+          <p class="contact-text" style="font-size: 1.5rem">
+            chujie.qin@mail.nankai.edu.cn
+          </p>
+          <p class="contact-text" style="font-size: 1.5rem">
+            guochunle@nankai.edu.cn
+          </p>
+          <!-- <p class="contact-text" style="font-size: 1.5rem">
+            zhangyongtju@163.com
+          </p>
+          <p class="contact-text" style="font-size: 1.5rem">
+            cmm@nankai.edu.cn
+          </p> -->
+          <p
+            class="contact-text"
+            style="font-size: 1.5rem"
+            data-en="For commercial licensing, please contact:"
+            data-zh="商业许可请联系："
+          >
+            For commercial licensing, please contact:
+          </p>
+          <p class="contact-text" style="font-size: 1.5rem">
+            lichongyi@nankai.edu.cn
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- License部分 -->
+    <section class="license-section" id="license">
+      <div class="container scroll-target">
+        <div class="section-header">
+          <h2 class="section-title" data-en="License" data-zh="许可证">
+            License
+          </h2>
+          <div class="section-divider"></div>
+        </div>
+        <div class="license-content">
+          <div class="license-container">
+            <div class="license-text" style="width: 100%; text-align: justify">
+              <h3 data-en="Pi-Lab License 1.0" data-zh="Pi-Lab 许可证 1.0">
+                Pi-Lab License 1.0
+              </h3>
+              <p data-en="Copyright 2025 Pi-Lab" data-zh="版权所有 2025 Pi-Lab">
+                Copyright 2025 Pi-Lab
+              </p>
+              <div class="license-actions">
+                <a
+                  href="https://github.com/fjc2005/DetectAnyLLM/blob/main/LICENSE.txt"
+                  target="_blank"
+                  class="license-btn"
+                >
+                  <i class="fas fa-external-link-alt"></i>
+                  <span data-en="View License" data-zh="查看许可证"
+                    >View License</span
+                  >
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Citation部分 -->
+    <section class="citation-section" id="citation">
+      <div class="container scroll-target">
+        <div class="section-header">
+          <h2 class="section-title" data-en="Citation" data-zh="引用信息">
+            Citation
+          </h2>
+          <div class="section-divider"></div>
+        </div>
+        <div class="citation-content">
+          <div class="bibtex-container">
+            <div class="bibtex-header">
+              <span class="bibtex-label">BibTeX</span>
+              <button class="copy-btn" id="copy-bibtex">
+                <i class="fas fa-copy"></i>
+                <span data-en="Copy" data-zh="复制">Copy</span>
+              </button>
+            </div>
+            <pre class="bibtex-code" id="bibtex-text">
+@inproceedings{fu2025detectanyllm,
+    title        = {DetectAnyLLM: Towards Generalizable and Robust Detection of Machine-Generated Text Across Domains and Models},
+    author       = {Fu, Jiachen and Guo, Chun-Le and Li, Chongyi},
+    year         = 2025,
+    booktitle    = {the 33rd ACM International Conference on Multimedia},
+    address      = {Dublin, Ireland},
+    organization = {ACM}
+}
+                    </pre
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 回到顶部按钮 -->
+    <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+      <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- 单一页脚（中英双语） -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-text">
+            <!-- 署名/致谢 -->
+            <p
+              data-en='Website source code is adapted from the <a href="https://fjc2005.github.io/detectanyllm/" target="_blank" rel="noopener">DetectAnyLLM</a> project page. If you want to reuse their <a href="https://github.com/fjc2005/fjc2005.github.io/tree/master/detectanyllm" target="_blank" rel="noopener">source code</a>, please credit them appropriately.'
+              data-zh='本网站源码基于 <a href="https://fjc2005.github.io/detectanyllm/" target="_blank" rel="noopener">DetectAnyLLM</a> 项目主页改写；如需复用其<a href="https://github.com/fjc2005/fjc2005.github.io/tree/master/detectanyllm" target="_blank" rel="noopener">源码</a>，请在适当位置致谢原作者。'
+            >
+              Website source code is adapted from the
+              <a
+                href="https://fjc2005.github.io/detectanyllm/"
+                target="_blank"
+                rel="noopener"
+                >DetectAnyLLM</a
+              >
+              project page. If you want to reuse their
+              <a
+                href="https://github.com/fjc2005/fjc2005.github.io/tree/master/detectanyllm"
+                target="_blank"
+                rel="noopener"
+                >source code</a
+              >, please credit them appropriately.
+            </p>
+
+            <!-- 版权 -->
+            <p
+              data-en="&copy; 2025 RAM++. All rights reserved."
+              data-zh="&copy; 2025 RAM++。保留所有权利。"
+            >
+              &copy; 2025 RAM++. All rights reserved.
+            </p>
+          </div>
+
+          <!-- 如需后续页脚链接可在此启用
+        <div class="footer-links">
+          <a href="#" class="footer-link" data-en="Contact Us" data-zh="联系我们">Contact Us</a>
+        </div>
+        --></div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".table-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            // 1. 移除所有按钮和表格的 active 状态
+            document
+              .querySelectorAll(".table-btn")
+              .forEach((b) => b.classList.remove("active"));
+            document
+              .querySelectorAll(".data-table-container")
+              .forEach((tc) => tc.classList.remove("active"));
+
+            // 2. 当前按钮添加 active
+            btn.classList.add("active");
+
+            // 3. 显示对应表格
+            const target = btn.getAttribute("data-target");
+            document.getElementById(target).classList.add("active");
+          });
+        });
+      });
+    </script>
+    <script>
+      (function () {
+        const cmp = document.getElementById("cmp");
+        const overlayImg = document.getElementById("image1"); // 覆盖图（左侧模型）
+        const baseImg = document.getElementById("image2"); // 底图（右侧模型）
+        const overlayContainer = document.getElementById("image2-container"); // 覆盖图容器
+        const slider = cmp.querySelector(".slider");
+
+        // 当前状态
+        let state = {
+          task: "motion_blur",
+          leftMethod: "LQ", // 左侧显示LQ（低质量图）
+          rightMethod: "GT", // 右侧显示GT（高质量图）
+          sliderX: 0.5, // 0~1
+        };
+
+        // 统一路径生成
+        function imgPath(task, method) {
+          return `images/vis/${task}/${method}.png`;
+        }
+
+        function fitToImages() {
+          // 以右侧底图为基准，确保两图同尺寸显示
+          const w = baseImg.naturalWidth || overlayImg.naturalWidth;
+          const h = baseImg.naturalHeight || overlayImg.naturalHeight;
+
+          Object.assign(cmp.style, {
+            position: "relative",
+            overflow: "hidden",
+            width: w + "px",
+            height: h + "px",
+            // 可选：让它在小屏自适应
+            maxWidth: "100%",
+          });
+
+          // 底图（右侧）
+          Object.assign(baseImg.style, {
+            position: "absolute",
+            top: "0",
+            left: "0",
+            width: w + "px",
+            height: h + "px",
+            zIndex: "1",
+          });
+
+          // 覆盖容器占满全幅，不再用它的 width 做裁剪
+          Object.assign(overlayContainer.style, {
+            position: "absolute",
+            top: "0",
+            left: "0",
+            height: h + "px",
+            overflow: "hidden",
+            zIndex: "2",
+          });
+          overlayContainer.style.width = Math.round(w * state.sliderX) + "px";
+
+          // 覆盖图尺寸固定为对比区域尺寸（不随容器宽度变化）
+          Object.assign(overlayImg.style, {
+            position: "absolute",
+            top: "0",
+            left: "0",
+            width: w + "px",
+            height: h + "px",
+          });
+
+          // 滑杆
+          Object.assign(slider.style, {
+            position: "absolute",
+            top: "0",
+            bottom: "0",
+            left: Math.round(w * 0.5) + "px",
+            cursor: "ew-resize",
+            zIndex: "3",
+          });
+
+          // 防止浏览器拖拽图片造成错位
+          overlayImg.setAttribute("draggable", "false");
+          baseImg.setAttribute("draggable", "false");
+
+          state.sliderX = 0.5;
+          applySliderPosition();
+        }
+
+        function applySliderPosition() {
+          const w = cmp.clientWidth;
+          const x = Math.round(state.sliderX * w);
+
+          // 关键：用宽度裁剪覆盖层（不再用 clip-path）
+          overlayContainer.style.width = x + "px";
+
+          // 同步滑杆位置
+          slider.style.left = x + "px";
+        }
+
+        // 更换任务或方法时更新图片并在加载完成后适配尺寸
+        function updateImages() {
+          const p1 = new Promise((res) => {
+            overlayImg.onload = res;
+            overlayImg.onerror = res;
+          });
+          const p2 = new Promise((res) => {
+            baseImg.onload = res;
+            baseImg.onerror = res;
+          });
+          // overlayImg 是左侧模型（覆盖图），baseImg 是右侧模型（底图）
+          overlayImg.src = imgPath(state.task, state.leftMethod);
+          baseImg.src = imgPath(state.task, state.rightMethod);
+          Promise.all([p1, p2]).then(fitToImages);
+        }
+
+        // 任务选择
+        document.querySelectorAll(".task-button").forEach((btn) => {
+          btn.addEventListener(
+            "click",
+            (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.stopImmediatePropagation(); // 先截断后续监听
+
+              document
+                .querySelectorAll(".task-button")
+                .forEach((b) => b.classList.remove("active"));
+              btn.classList.add("active");
+
+              state.task = btn.getAttribute("data-task");
+              updateImages();
+            },
+            { capture: true }
+          ); // <--- 关键：捕获阶段先执行
+        });
+
+        // 模型按钮（左右两栏）
+        function wireMethodSelector(containerSelector, side) {
+          document
+            .querySelectorAll(`${containerSelector} .method-button`)
+            .forEach(
+              (btn) => {
+                btn.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.stopImmediatePropagation(); // 先截断后续监听
+
+                  document
+                    .querySelectorAll(`${containerSelector} .method-button`)
+                    .forEach((b) => b.classList.remove("active"));
+                  btn.classList.add("active");
+
+                  const m = btn.getAttribute("data-method");
+                  if (side === "left") {
+                    state.leftMethod = m;
+                  } else {
+                    state.rightMethod = m;
+                  }
+                  // 仅换模型，不改任务
+                  updateImages();
+                });
+              },
+              { capture: true }
+            ); // <--- 关键：捕获阶段先执行
+        }
+
+        wireMethodSelector(".left-selector", "left");
+        wireMethodSelector(".right-selector", "right");
+
+        // 滑杆拖拽（鼠标+触屏）
+        function onDrag(clientX) {
+          const rect = cmp.getBoundingClientRect();
+          let x = Math.min(Math.max(clientX - rect.left, 0), rect.width);
+          state.sliderX = x / rect.width;
+          applySliderPosition();
+        }
+        let dragging = false;
+        slider.addEventListener("mousedown", (e) => {
+          dragging = true;
+          e.preventDefault();
+        });
+        document.addEventListener("mousemove", (e) => {
+          if (dragging) onDrag(e.clientX);
+        });
+        document.addEventListener("mouseup", () => {
+          dragging = false;
+        });
+
+        slider.addEventListener(
+          "touchstart",
+          (e) => {
+            dragging = true;
+            e.preventDefault();
+          },
+          { passive: false }
+        );
+        document.addEventListener(
+          "touchmove",
+          (e) => {
+            if (dragging) onDrag(e.touches[0].clientX);
+          },
+          { passive: false }
+        );
+        document.addEventListener("touchend", () => {
+          dragging = false;
+        });
+
+        // 初始化函数
+        function initializeComparison() {
+          // 设置初始按钮状态
+          document
+            .querySelectorAll(".left-selector .method-button")
+            .forEach((btn) => {
+              btn.classList.remove("active");
+              if (btn.getAttribute("data-method") === state.leftMethod) {
+                btn.classList.add("active");
+              }
+            });
+          document
+            .querySelectorAll(".right-selector .method-button")
+            .forEach((btn) => {
+              btn.classList.remove("active");
+              if (btn.getAttribute("data-method") === state.rightMethod) {
+                btn.classList.add("active");
+              }
+            });
+
+          // 载入图片
+          updateImages();
+        }
+
+        // 初始载入
+        initializeComparison();
+
+        // 窗口尺寸改变时，保持 slider 位置比例
+        window.addEventListener("resize", applySliderPosition);
+      })();
+    </script>
+  </body>
+</html>
