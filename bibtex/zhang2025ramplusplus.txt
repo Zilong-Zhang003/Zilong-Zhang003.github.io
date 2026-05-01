@@ -1,0 +1,9 @@
+@misc{zhang2025ramrobustrepresentationlearning,
+      title={RAM++: Robust Representation Learning via Adaptive Mask for All-in-One Image Restoration}, 
+      author={Zilong Zhang and Chujie Qin and Chunle Guo and Yong Zhang and Chao Xue and Ming-Ming Cheng and Chongyi Li},
+      year={2025},
+      eprint={2509.12039},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2509.12039}, 
+}

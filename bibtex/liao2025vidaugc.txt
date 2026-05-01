@@ -1,0 +1,9 @@
+@misc{liao2025vidaugcdetailedimagequality,
+      title={ViDA-UGC: Detailed Image Quality Analysis via Visual Distortion Assessment for UGC Images}, 
+      author={Wenjie Liao and Jieyu Yuan and Yifang Xu and Chunle Guo and Zilong Zhang and Jihong Li and Jiachen Fu and Haotian Fan and Tao Li and Junhui Cui and Chongyi Li},
+      year={2025},
+      eprint={2508.12605},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2508.12605}, 
+}
