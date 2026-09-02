@@ -1,0 +1,9 @@
+@inproceedings{qin2026dotting,
+  title={Dotting the Eye: An Intent-Driven Image Retouching Agent for Visual Focus Enhancement},
+  author={Qin, Chujie and Zhang, Zilong and Chang, Zewei and Guo, Chun-Le and Wang, Ruixing and Hu, Tao and Cheng, Ming-Ming and Li, Chongyi},
+  booktitle={Computer Vision -- ECCV 2026},
+  year={2026},
+  publisher={Springer Nature Switzerland},
+  address={Cham},
+  url={https://eccv.ecva.net/virtual/2026/poster/4878}
+}
